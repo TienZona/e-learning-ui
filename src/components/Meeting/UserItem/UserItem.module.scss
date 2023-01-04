@@ -1,0 +1,65 @@
+
+.user-item {
+    position: relative;
+    width: 160px;
+    height: 90px;
+    border-radius: 16px;
+    background-color: aquamarine;
+    overflow: hidden;
+
+    &.acitve {
+        width: 120px;
+        height: 120px;
+    }
+
+    .avatar {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .name {
+        position: absolute;
+        font-size: 14px;
+        padding: 2px 4px;
+        border-radius: 4px;
+        background-color: rgba($color: #333, $alpha: .3);
+        color: var(--text-color);
+        left: 6px;
+        top: 6px;
+        text-align: center;
+        text-shadow: 2px 2px 4px #698b74;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+    .tool {
+        position: absolute;
+        bottom: 3px;
+        width: 60px;
+        left: calc(50% - 30px);
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .btn {
+        width: 24px;
+        height: 24px;
+        font-size: 14px;
+        color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba($color: #000000, $alpha: .5);
+        background-color: rgb(67, 70, 244);
+
+        &:hover {
+            background-color: rgb(67, 70, 244);
+        }
+
+    }
+}
+.active {
+    background-color: #fff !important;
+    color:  var(--theme-dark) !important;
+}

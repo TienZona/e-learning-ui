@@ -1,0 +1,29 @@
+.wrapper {
+    width: 100%;
+    height: 100%;
+}
+.header {
+    width: 100%;
+    height: 40px;
+    background-color: #98e2d2;
+}
+
+.mid-content {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.left-content {
+    height: 500px;
+    background-color: #fff;
+}
+.right-content {
+    height: 500px;
+    background-color: #fff;
+}
+.footer {
+    height: 120px;
+    border-radius: 6px;
+    // background-color: rgba($color: #c261e8, $alpha: 1);
+}

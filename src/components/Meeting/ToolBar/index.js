@@ -20,7 +20,7 @@ function ToolBar(props) {
                 <FontAwesomeIcon className={cx('icon-mic')} icon={micro ? faMicrophoneSlash : faMicrophone} />
             </div>
             <div className={cx('item', props.camera && 'checked')} onClick={() => props.onCamera(!props.camera)}>
-                <FontAwesomeIcon className={cx('icon-mic')} icon={props.camera ? faVideoSlash : faVideo} />
+                <FontAwesomeIcon className={cx('icon-mic')} icon={props.camera ? faVideo : faVideoSlash} />
             </div>
             <div className={cx('item', hand || 'checked')} onClick={() => setHand(!hand)}>
                 <FontAwesomeIcon className={cx('icon-mic')} icon={faHand} />

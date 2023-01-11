@@ -5,6 +5,8 @@ import { useRef, useState, useEffect } from 'react';
 import VideoFrame from '~/components/Meeting/VideoFrame/VideoFrame';
 import ToolBar from '~/components/Meeting/ToolBar';
 import SliderUser from '~/components/Meeting/SliderUser';
+import ChatBox from '~/components/Meeting/ChatBox';
+import UserItem from '~/components/Meeting/UserItem';
 
 const cx = classNames.bind(styles);
 
@@ -13,104 +15,64 @@ function Meeting() {
         {
             avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
             name: 'Chung Phat Tien',
-        },
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-        },
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-        },
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-        },
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-        },
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-        },
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-        },
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-        },
+        }   
+        
     ];
     const videoTag = useRef();
     const [camera, setCamera] = useState(false);
-    const [mediaStream, setMedia] = useState(null);
+    const [streaming, setStreaming] = useState();
+    const openStream = () => {
+        const config = { audio: true, video: true };
+        return navigator.mediaDevices.getUserMedia(config);
+    };
 
-    function addVideoStream(video, stream) {
-        video.srcObject = stream;
-        video.addEventListener('loadedmetadata', () => {
-            video.play();
-        });
-        video.append(video);
-    }
-
-    function stopStreamedVideo(videoElem) {
-        const stream = videoElem.srcObject;
-        const tracks = stream.getTracks();
-      
-        tracks.forEach((track) => {
-          track.stop();
-        });
-      
-        videoElem.srcObject = null;
-      }
+    const playStream = (videoTag, stream) => {
+        videoTag.srcObject = stream;
+        videoTag.play();
+    };
 
     useEffect(() => {
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
         if (camera) {
-            if (navigator.getUserMedia) {
-                const video = document.querySelector('video');
-                navigator.getUserMedia(
-                    { audio: true, video: { width: 1280, height: 720 } },
-                    (stream) => {
-                        video.srcObject = stream;
-                        video.onloadedmetadata = (e) => {
-                            video.play();
-                        };
-                        console.log(stream)
-                    },
-                    (err) => {
-                        console.error(`The following error occurred: ${err.name}`);
-                    },
-                );
-            } else {
-                console.log('getUserMedia not supported');
+            openStream().then((stream) => {
+                setStreaming(stream);
+                playStream(videoTag.current, stream);
+            });
+        } else {
+            if (streaming) {
+                streaming.getTracks().forEach((track) => track.stop());
             }
-        }else{
-            stopStreamedVideo()
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [camera]);
 
     return (
         <div className={cx('')}>
             <header className={cx('header')}></header>
-            <div className="xl:container px-8">
+            <div className="xl:container p-8">
                 <div className="grid grid-cols-12 gap-4 py-4">
                     <div className={cx('left-content') + ' col-span-2'}></div>
                     <div className={cx('mid-content') + ' col-span-8'}>
                         <VideoFrame videoTag={videoTag} />
                         <ToolBar camera={camera} onCamera={setCamera} />
                     </div>
-                    <div className={cx('right-content') + ' col-span-2'}></div>
-                </div>
-                <div className="grid grid-cols-6">
-                    <div className={cx('footer') + ' col-start-2 col-span-4'}>
-                        {/* <Slider /> */}
-
-                        <SliderUser users={users} />
+                    <div className={cx('right-content') + ' col-span-2'}>
+                        <ChatBox />
                     </div>
+                </div>
+                <div className={cx('footer') + ' grid grid-cols-12 gap-8'}>
+                    <div className={cx('left') + ' col-span-2'}></div>
+                    <div className={cx('mid') + ' col-span-8'}>
+                        {users.length < 4 ? (
+                            <div className='flex justify-evenly'>
+                                {users.map((item, index) => (
+                                    <UserItem key={index} item={item} />
+                                ))}
+                            </div>
+                        ) : (
+                            <SliderUser users={users} />
+                        )}
+                    </div>
+                    <div className={cx('right') + ' col-span-2'}></div>
                 </div>
             </div>
         </div>

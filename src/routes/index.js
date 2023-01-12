@@ -1,16 +1,22 @@
 import Home from '~/pages/Home';
 import Meeting from '~/pages/Meeting'
 import MeetingLayout from '~/components/Layout/MeetingLayout';
-
+import Meet from '~/pages/Meet';
 const publicRoutes = [
     {
         path: '/',
         component: Home,
-
+    },
+    {
         path: '/meeting',
         component: Meeting,
         layout: MeetingLayout
     },
+    {
+        path: '/meet',
+        component: Meet,
+        layout: MeetingLayout
+    }
 ];
 
 const privateRoutes = [];

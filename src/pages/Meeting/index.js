@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Meeting.module.scss';
 import { useRef, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import VideoFrame from '~/components/Meeting/VideoFrame/VideoFrame';
 import ToolBar from '~/components/Meeting/ToolBar';
@@ -11,13 +12,9 @@ import UserItem from '~/components/Meeting/UserItem';
 const cx = classNames.bind(styles);
 
 function Meeting() {
-    const users = [
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-        }   
-        
-    ];
+    const users = useSelector(state => state.user.list)
+    console.log(users)
+    
     const videoTag = useRef();
     const [camera, setCamera] = useState(false);
     const [streaming, setStreaming] = useState();
@@ -47,7 +44,6 @@ function Meeting() {
 
     return (
         <div className={cx('')}>
-            <header className={cx('header')}></header>
             <div className="xl:container p-8">
                 <div className="grid grid-cols-12 gap-4 py-4">
                     <div className={cx('left-content') + ' col-span-2'}></div>

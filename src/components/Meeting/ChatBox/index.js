@@ -3,100 +3,47 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faUsers, faComments } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addChat } from '~/redux/actions/chat';
 
 import ItemChat from '~/components/Meeting/ItemChat';
 import ItemUser from '../ItemUser';
 
 const cx = classNames.bind(styles);
 
-function ChatBox() {
+function ChatBox({ socket, username, room }) {
+    // redux
+    const users = useSelector((state) => state.user.list);
+    const listMessage = useSelector((state) => state.chat.list);
+    const [currentMessage, setCurrentMessage] = useState('');
+    const dispatch = useDispatch();
+
+    // hook
     const [theme, setTheme] = useState(true);
 
-    const inputValue = useRef();
-    const [listChat, setListChat] = useState([]);
-    const [chat, setChat] = useState('');
-
-    const [listUser, setListUser] = useState([
-        {
-            avatar: 'https://cdn.dribbble.com/users/1044993/screenshots/6187369/media/003ab0d70b4391716fdce14bf57bf2a7.png?compress=1&resize=400x300',
-            name: 'TienZona',
-            email: 'tienzona001@gmail.com'
-        },
-        {
-            avatar: 'https://cdn.dribbble.com/users/1044993/screenshots/6187369/media/003ab0d70b4391716fdce14bf57bf2a7.png?compress=1&resize=400x300',
-            name: 'TienZona',
-            email: 'tienzona001@gmail.com'
-        },
-        {
-            avatar: 'https://cdn.dribbble.com/users/1044993/screenshots/6187369/media/003ab0d70b4391716fdce14bf57bf2a7.png?compress=1&resize=400x300',
-            name: 'TienZona',
-            email: 'tienzona001@gmail.com'
-        },
-        {
-            avatar: 'https://cdn.dribbble.com/users/1044993/screenshots/6187369/media/003ab0d70b4391716fdce14bf57bf2a7.png?compress=1&resize=400x300',
-            name: 'TienZona',
-            email: 'tienzona001@gmail.com'
-        },
-        {
-            avatar: 'https://cdn.dribbble.com/users/1044993/screenshots/6187369/media/003ab0d70b4391716fdce14bf57bf2a7.png?compress=1&resize=400x300',
-            name: 'TienZona',
-            email: 'tienzona001@gmail.com'
-        },
-        {
-            avatar: 'https://cdn.dribbble.com/users/1044993/screenshots/6187369/media/003ab0d70b4391716fdce14bf57bf2a7.png?compress=1&resize=400x300',
-            name: 'TienZona',
-            email: 'tienzona001@gmail.com'
-        },
-        {
-            avatar: 'https://cdn.dribbble.com/users/1044993/screenshots/6187369/media/003ab0d70b4391716fdce14bf57bf2a7.png?compress=1&resize=400x300',
-            name: 'TienZona',
-            email: 'tienzona001@gmail.com'
-        },
-        {
-            avatar: 'https://cdn.dribbble.com/users/1044993/screenshots/6187369/media/003ab0d70b4391716fdce14bf57bf2a7.png?compress=1&resize=400x300',
-            name: 'TienZona',
-            email: 'tienzona001@gmail.com'
-        },
-    ]);
+    const sendMessage = async () => {
+        if (currentMessage !== '') {
+            const messageData = {
+                room: room,
+                avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
+                author: username,
+                message: currentMessage,
+                time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes(),
+            };
+            await socket.emit('send_message', messageData);
+            dispatch(addChat(messageData));
+            setCurrentMessage('');
+        }
+    };
 
     useEffect(() => {
-        if (chat) {
-            setListChat([...listChat, chat]);
-            inputValue.current.value = '';
-        }
-    }, [chat]);
-    // useEffect(() => {
-    //     setListUser([...listUser, {
-    //         avatar: 'https://cdn.dribbble.com/users/1044993/screenshots/6187369/media/003ab0d70b4391716fdce14bf57bf2a7.png?compress=1&resize=400x300',
-    //         name: 'TienZona'
-    //     }])
-    // }, [])
-
-    const submitComment = () => {
-        if (inputValue.current.value !== '') {
-            setChat({
-                avatar: 'https://cdn.dribbble.com/users/1044993/screenshots/6187369/media/003ab0d70b4391716fdce14bf57bf2a7.png?compress=1&resize=400x300',
-                name: 'Chung Phat Tien',
-                content: inputValue.current.value,
-                time: '12:01',
-            });
-            inputValue.current.value = '';
-            inputValue.current.focus();
-        } else {
-            inputValue.current.focus();
-        }
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter' && e.target.value !== '') {
-            setChat({
-                avatar: 'https://cdn.dribbble.com/users/1044993/screenshots/6187369/media/003ab0d70b4391716fdce14bf57bf2a7.png?compress=1&resize=400x300',
-                name: 'Chung Phat Tien',
-                content: e.target.value,
-                time: '12:01',
-            });
-        }
-    };
+        socket.on('receive_message', (data) => {
+            dispatch(addChat(data));
+            console.log(data)
+        });
+        console.log(listMessage)
+    
+    }, [socket]);
 
     return (
         <div className={cx('box-chat')}>
@@ -109,11 +56,11 @@ function ChatBox() {
                     {theme ? (
                         <div>
                             <FontAwesomeIcon icon={faUsers} />
-                            <span>{listUser.length}</span>
+                            <span>{users.length}</span>
                         </div>
                     ) : (
                         <div>
-                            <span>{listChat.length}</span>
+                            <span>{listMessage.length}</span>
                             <FontAwesomeIcon icon={faComments} />
                         </div>
                     )}
@@ -121,19 +68,19 @@ function ChatBox() {
             </div>
             {theme ? (
                 <div className={cx('chat-content')}>
-                    {listChat.map((item, index) => (
+                    {listMessage.map((item, index) => (
                         <ItemChat
                             key={index}
                             avatar={item.avatar}
                             time={item.time}
-                            name={item.name}
-                            content={item.content}
+                            name={item.author}
+                            content={item.message}
                         />
                     ))}
                 </div>
             ) : (
                 <div className={cx('user-content')}>
-                    {listUser.map((item, index) => (
+                    {users.map((item, index) => (
                         <ItemUser key={index} user={item} />
                     ))}
                 </div>
@@ -147,14 +94,17 @@ function ChatBox() {
                 />
                 <div className={cx('chat-input')}>
                     <input
-                        ref={inputValue}
+                        value={currentMessage}
                         type="text"
+                        onChange={(e) => setCurrentMessage(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') sendMessage();
+                        }}
                         placeholder="Bạn muốn nói gì đó"
-                        onKeyDown={(e) => handleKeyDown(e)}
                     />
                     <span />
                 </div>
-                <div className={cx('btn-send')} onClick={() => submitComment()}>
+                <div className={cx('btn-send')} onClick={() => sendMessage()}>
                     <FontAwesomeIcon icon={faPaperPlane} />
                 </div>
             </div>

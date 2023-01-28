@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Default.module.scss';
 
 import { Header, Footer } from '~/components/Layout';
+import SideBar from '../componenets/SideBar';
 
 const cx = classNames.bind(styles);
 
@@ -10,6 +11,7 @@ function Default({ children }) {
         <div className={cx('wrapper') + ''}>
             <Header />
             <div className={cx('container') + ' md:container md:mx-auto' }>
+                <SideBar />
                 <div className={cx('content')}>{children}</div>
             </div>
             <Footer />

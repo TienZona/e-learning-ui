@@ -3,7 +3,28 @@ const initialState = {
         {
             avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
             name: 'Chung Phat Tien',
-        }   
+            email: 'TienZona@gmail.com',
+        },
+        {
+            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
+            name: 'Chung Phat Tien',
+            email: 'TienZona@gmail.com',
+        },
+        {
+            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
+            name: 'Chung Phat Tien',
+            email: 'TienZona@gmail.com',
+        },
+        {
+            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
+            name: 'Chung Phat Tien',
+            email: 'TienZona@gmail.com',
+        },
+        {
+            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
+            name: 'Chung Phat Tien',
+            email: 'TienZona@gmail.com',
+        },
     ],
     selectedId: null,
 };

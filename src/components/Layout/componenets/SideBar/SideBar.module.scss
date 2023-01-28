@@ -1,0 +1,51 @@
+.container {
+    $color-item: rgb(255, 255, 255);
+    $color-theme: #b0dff5;
+
+    position: absolute;
+    top: 30px;
+    left: 10px;
+    width: 80px;
+    height: 500px;
+    background-color: $color-theme;
+    border-radius: 20px;
+    box-shadow: 0 0 4px 4px rgba($color: #ccc, $alpha: .2);
+    padding: 10px;
+
+    .item {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        margin-bottom: 20px;
+        border-radius: 50%;
+        color: #333;
+        background-color: $color-item;
+        box-shadow: 0 0 3px 3px rgba($color: rgb(208, 172, 172), $alpha: .5);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+
+        .icon {
+            color: rgb(45, 128, 229);
+            font-size: 16px;
+        }
+
+        span {
+            font-size: 14px;
+        }
+
+        &.active {
+            background-color: #333;
+            color: #fff;
+        }
+
+        &:hover {
+            cursor: pointer;
+            background-color: #666;
+            color: #fff;
+        }
+
+    }
+}

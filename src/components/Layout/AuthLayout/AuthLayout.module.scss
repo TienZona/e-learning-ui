@@ -1,0 +1,11 @@
+.wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+        url('https://wallpaperset.com/w/full/9/7/c/479758.jpg');
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

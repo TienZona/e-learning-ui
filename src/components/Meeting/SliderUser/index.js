@@ -35,7 +35,7 @@ export default class SliderUser extends Component {
       centerMode: true,
       infinite: true,
       centerPadding: "60px",
-      slidesToShow: 4,
+      slidesToShow: 3,
       speed: 500,
       focusOnSelect: true,
       nextArrow: <></>,
@@ -44,7 +44,7 @@ export default class SliderUser extends Component {
     return (
       <div>
         <Slider {...settings}>
-          {users.map((user, index) => (<UserItem key={index} item={user} />))}
+          {users.map((user, index) => (<UserItem key={index} user={user} />))}
         </Slider>
       </div>
     );

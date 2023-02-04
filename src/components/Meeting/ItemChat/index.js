@@ -14,7 +14,7 @@ function ItemChat(props) {
             </div>
             <div className={cx('item-chat-right')}>
                 <span className={cx('name')}>
-                    {props.name}
+                    {props.auther}
                     <span className={cx('content')}>{props.content}</span>
                 </span>
             </div>

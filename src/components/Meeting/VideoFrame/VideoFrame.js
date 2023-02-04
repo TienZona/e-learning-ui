@@ -7,7 +7,7 @@ function VideoFrame(props) {
 
     return (
         <div className={cx('wrapper')}>
-            <video src="" ref={props.videoTag} width="800px" height="450px"></video>
+            <video src="" ref={props.videoTag}></video>
         </div>
     );
 }

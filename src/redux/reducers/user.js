@@ -1,31 +1,5 @@
 const initialState = {
-    list: [
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-            email: 'TienZona@gmail.com',
-        },
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-            email: 'TienZona@gmail.com',
-        },
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-            email: 'TienZona@gmail.com',
-        },
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-            email: 'TienZona@gmail.com',
-        },
-        {
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            name: 'Chung Phat Tien',
-            email: 'TienZona@gmail.com',
-        },
-    ],
+    list: [],
     selectedId: null,
 };
 
@@ -39,8 +13,30 @@ const userReducer = (state = initialState, action) => {
                 list: newList,
             };
         }
+
+        case 'LIST_USER': {
+            return {
+                ...state,
+                list: action.payload,
+            };
+        }
+
+        case 'SET_STREAM': {
+            const newList = state.list.map((item) => {
+                if (item.peerID === action.payload.userID) {
+                    item.stream = action.payload.stream;
+                }
+                return item;
+            });
+
+            return {
+                ...state,
+                list: newList,
+            };
+        }
         default:
             return state;
     }
 };
+
 export default userReducer;

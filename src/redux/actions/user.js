@@ -4,3 +4,21 @@ export const addUser = (user) => {
         payload: user
     }
 }
+
+export const addListUser = (users) => {
+    return {
+        type: 'LIST_USER',
+        payload: users
+    }
+}
+
+
+export const setStream = (userID, stream) => {
+    return {
+        type: 'SET_STREAM',
+        payload: {
+            userID,
+            stream
+        }
+    }
+}

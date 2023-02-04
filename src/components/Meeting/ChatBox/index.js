@@ -20,13 +20,15 @@ function ChatBox({ socket, username, room }) {
 
     // hook
     const [theme, setTheme] = useState(true);
+    const messagesEndRef = useRef(null);
+    const [timer, setTimer] = useState(new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes('00'))
 
     const sendMessage = async () => {
         if (currentMessage !== '') {
             const messageData = {
                 room: room,
                 avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-                author: username,
+                author: username ? username : 'TienZona',
                 message: currentMessage,
                 time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes(),
             };
@@ -37,19 +39,32 @@ function ChatBox({ socket, username, room }) {
     };
 
     useEffect(() => {
-        socket.on('receive_message', (data) => {
+        const interval = setInterval(() => setTimer(new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes()), 10000);
+        return () => {
+          clearInterval(interval);
+        };
+      }, []);
+
+    useEffect(() => {
+        socket.on('receive_message', (users, data) => {
             dispatch(addChat(data));
-            console.log(data)
+            console.log(users)
         });
-        console.log(listMessage)
-    
     }, [socket]);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [listMessage]);
 
     return (
         <div className={cx('box-chat')}>
             <div className={cx('chat-header')}>
                 <div className={cx('timer')}>
-                    <span>12:00</span>
+                    <span>{timer}</span>
                 </div>
                 <div className={cx('is-land')}>{theme ? <span>Tin nhắn</span> : <span>Thành viên</span>}</div>
                 <div className={cx('box-icon')} onClick={() => setTheme(!theme)}>
@@ -67,16 +82,17 @@ function ChatBox({ socket, username, room }) {
                 </div>
             </div>
             {theme ? (
-                <div className={cx('chat-content')}>
+                <div className={cx('chat-content')} key={listMessage.id} {...listMessage}>
                     {listMessage.map((item, index) => (
                         <ItemChat
                             key={index}
                             avatar={item.avatar}
                             time={item.time}
-                            name={item.author}
+                            auther={item.author}
                             content={item.message}
                         />
                     ))}
+                    <div ref={messagesEndRef} />
                 </div>
             ) : (
                 <div className={cx('user-content')}>

@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './NavBar.module.scss';
+import { Link } from 'react-router-dom';
 
 import iconMeet from '~/assets/icon/meet.png';
 import iconClassRoom from '~/assets/icon/classroom.png';
@@ -15,18 +16,23 @@ function NavBar() {
                 <span>Home</span>
             </div>
             <div className={cx('navbar')}>
-                <div className={cx('item')}>
-                    <img src={iconMeet} alt="Meet" />
-                    <span>Meet</span>
-                </div>
+                <Link to="/meet">
+                    <div className={cx('item')}>
+                        <img src={iconMeet} alt="Meet" />
+                        <span>Meet</span>
+                    </div>
+                </Link>
+
                 <div className={cx('item')}>
                     <img src={iconClassRoom} alt="class" />
                     <span>Class</span>
                 </div>
-                <div className={cx('item')}>
-                    <img src={iconUser} alt="user" />
-                    <span>User</span>
-                </div>
+                <Link to="/auth">
+                    <div className={cx('item')}>
+                        <img src={iconUser} alt="user" />
+                        <span>Login</span>
+                    </div>
+                </Link>
             </div>
         </div>
     );

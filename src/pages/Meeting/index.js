@@ -10,13 +10,17 @@ import io from 'socket.io-client';
 // // import Button from '@mui/material/Button';
 // import Typography from '@mui/material/Typography';
 // import Modal from '@mui/material/Modal';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import Tooltip from '@mui/material/Tooltip';
 
 import VideoFrame from '~/components/Meeting/VideoFrame/VideoFrame';
 import ToolBar from '~/components/Meeting/ToolBar';
 import SliderUser from '~/components/Meeting/SliderUser';
 import ChatBox from '~/components/Meeting/ChatBox';
 import UserItem from '~/components/Meeting/UserItem';
-import { addListUser, addUser, setStream } from '~/redux/actions/user';
+import { addListUser, addUser, setStream, removeList } from '~/redux/actions/user';
+import ToolHost from '~/components/Meeting/ToolHost';
+import FeatureBox from '~/components/Meeting/FeatureBox';
 
 const socket = io.connect('http://localhost:3000');
 const cx = classNames.bind(styles);
@@ -25,11 +29,11 @@ function Meeting() {
     // hook
     const [isCamera, setIsCamera] = useState(false);
     const [isAudio, setIsAudio] = useState(false);
-    const [isScreen, setIsScreen] = useState(false)
-    const [screenShare, setScreenShare] = useState(null)
+    const [isScreen, setIsScreen] = useState(false);
+    const [screenShare, setScreenShare] = useState(null);
     const [streaming, setStreaming] = useState();
     const [roomId, setRoomID] = useState('');
-    const [peerID, setPeerID] = useState(null)
+    const [peerID, setPeerID] = useState(null);
     const peerInstance = useRef(null);
     const remoteVideoRef = useRef(null);
     const currentUserVideoRef = useRef(null);
@@ -128,6 +132,10 @@ function Meeting() {
         });
 
         peerInstance.current = peer;
+
+        return () => {
+            dispatch(removeList());
+        };
     }, []);
 
     useEffect(() => {
@@ -137,8 +145,12 @@ function Meeting() {
     useEffect(() => {
         socket.on('receive_user_join', (room, newUser) => {
             dispatch(addListUser(room.users));
-            call(newUser.peerID);
+            // call(newUser.peerID);
         });
+
+        socket.on('receive_user_disconnected', (room) => {
+            dispatch(addListUser(room.users));
+        })
     }, [socket]);
 
     useEffect(() => {
@@ -178,15 +190,17 @@ function Meeting() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isCamera]);
 
+
+
     useEffect(() => {
-        if(isScreen){
-            shareScreen().then(screenStream => {
+        if (isScreen) {
+            shareScreen().then((screenStream) => {
                 currentUserVideoRef.current.srcObject = screenStream;
-                currentUserVideoRef.current.play(); 
+                currentUserVideoRef.current.play();
                 setScreenShare(screenStream);
-            })
-        }else{
-            if(screenShare){
+            });
+        } else {
+            if (screenShare) {
                 screenShare.getTracks().forEach(function (track) {
                     if (track.readyState === 'live') {
                         track.stop();
@@ -194,7 +208,7 @@ function Meeting() {
                 });
             }
         }
-    }, [isScreen])
+    }, [isScreen]);
 
     useEffect(() => {
         if (streaming) {
@@ -210,14 +224,36 @@ function Meeting() {
         }
     }, [isAudio]);
 
+    const handleCopyRight = () => {
+        navigator.clipboard.writeText(roomId);
+    };
+
     return (
         <div className={cx('')}>
-            <div className="xl:container p-8">
-                <div className="grid grid-cols-12 gap-4 py-4">
-                    <div className={cx('left-content') + ' col-span-2'}></div>
+            <ToolHost />
+            <div className={cx('id-meeting')}>
+                <h1>{roomId}</h1>
+                <Tooltip title="Copy" size="large">
+                    <div className={cx('icon-saved')} onClick={handleCopyRight}>
+                        <ContentCopyIcon></ContentCopyIcon>
+                    </div>
+                </Tooltip>
+            </div>
+            <div className="xl:container p-2">
+                <div className="grid grid-cols-12 gap-4 ">
+                    <div className={cx('left-content') + ' col-span-2'}>
+                        <FeatureBox />
+                    </div>
                     <div className={cx('mid-content') + ' col-span-8'}>
                         <VideoFrame videoTag={currentUserVideoRef} />
-                        <ToolBar camera={isCamera} onCamera={setIsCamera} audio={isAudio} onAudio={setIsAudio} screen={isScreen} onScreen={setIsScreen}/>
+                        <ToolBar
+                            camera={isCamera}
+                            onCamera={setIsCamera}
+                            audio={isAudio}
+                            onAudio={setIsAudio}
+                            screen={isScreen}
+                            onScreen={setIsScreen}
+                        />
                     </div>
                     <div className={cx('right-content') + ' col-span-2'}>
                         <ChatBox socket={socket} username={username} room={roomId} />

@@ -11,16 +11,55 @@
 }
 
 .footer {
-
     .mid {
         height: 120px;
         border-radius: 6px;
         // display: flex;
     }
-
 }
 
 .list-video-frame {
     display: flex;
-    flex-wrap: wrap
+    flex-wrap: wrap;
+}
+
+.id-meeting {
+    position: fixed;
+    height: 30px;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #fff;
+        background-color: rgba($color: #fff, $alpha: 0.1);
+    }
+
+    .icon-saved {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 10px;
+        color: #fff;
+        background-color: #76a1ec;
+        border-radius: 4px;
+        font-size: 30p;
+        transition: all ease .2s;
+
+        &:hover {
+            cursor: pointer;
+            background-color: rgb(71, 74, 222)
+        }
+    }
+
 }

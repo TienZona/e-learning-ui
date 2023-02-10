@@ -1,0 +1,172 @@
+.wrapper {
+    padding: 10px;
+
+    .heading {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .timer {
+        margin:  0 auto;
+        width: 80px;
+        height: 30px;
+        background: #fff;
+        border-radius: 3px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .list {
+        .item {
+            position: relative;
+            padding-bottom: 10px;
+            height: auto;
+            font-size: 16px;
+            color: #000;
+            font-weight: 600;
+            padding: 6px 12px;
+            margin-bottom: 10px;
+            background-color: rgba($color: #fdfde1, $alpha: 1);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            animation: all ease 5s;
+
+            .quantity {
+                padding: 3px 10px;
+                margin-right: 12px;
+                border-radius: 3px;
+                background-color: #df4646;
+                color: #fff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .content {
+                width: 200px;
+            }
+
+            .voting {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                right: 0;
+                color: #000;
+                font-weight: 700;
+                font-size: 16px;
+                background-color: #fff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transform-origin: center right;
+                transform: scaleX(0);
+                transition: transform 0.3s ease;
+
+                &:hover {
+                    cursor: pointer;
+                }
+
+            }
+
+            .voting-btn {
+               position: absolute;
+               left: 10px;
+               padding: 5px 20px;
+               font-size: 14px;
+               background: linear-gradient(60deg, green, rgb(33, 190, 33));
+               color: #fff;
+            }
+
+            &::before {
+                position: absolute;
+                content: '';
+                height: 100%;
+                right: -18px;
+                border-width: 10px 10px;
+                border-color:  transparent transparent  transparent rgba(96, 150, 237, 1);
+            }
+            &:hover .voting {
+                transform-origin: center right;
+                transform: scaleY(1);            
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                right: -100%;
+            }
+            to {
+                right: 0;
+            }
+        }
+    }
+
+    .chart {
+        padding: 30px;
+        color: #fff;
+    }
+
+    .button-chart {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 80px;
+        height: 30px;
+        border-radius: 15px;
+        background: linear-gradient(60deg, rgb(228, 201, 122), rgb(47, 193, 95));
+        color: #fff;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow:  0 0 2px 2px rgba($color: #222221, $alpha: .4);
+
+        &:hover {
+            cursor: pointer;
+            opacity: .9;
+        }
+    }
+}
+
+
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .modal-box {
+        width: 500px;
+        height: 100px;
+        padding: 20px 30px;
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 0 2px 4px rgba($color: #222221, $alpha: .4);
+
+        display: flex;
+        justify-content: center;
+        align-items: center ;
+    }
+}
+.item {
+    position: relative;
+    display: flex;
+
+    span {
+        max-width: 60px;
+    }
+
+    h3 {
+        position: absolute;
+        left: 70px;
+    }
+
+    .avatar-group {
+        position: absolute;
+        right: 10px;
+        z-index: 1;
+    }
+}

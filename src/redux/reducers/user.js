@@ -34,6 +34,13 @@ const userReducer = (state = initialState, action) => {
                 list: newList,
             };
         }
+
+        case 'REMOVE_LIST' : {
+            return {
+                ...state,
+                list: []
+            }
+        }
         default:
             return state;
     }

@@ -66,7 +66,7 @@ function ChatBox({ socket, username, room }) {
                 <div className={cx('timer')}>
                     <span>{timer}</span>
                 </div>
-                <div className={cx('is-land')}>{theme ? <span>Tin nhắn</span> : <span>Thành viên</span>}</div>
+                <div className={cx('is-land')}>{theme ? <span>Tin Nhắn</span> : <span>Thành Viên</span>}</div>
                 <div className={cx('box-icon')} onClick={() => setTheme(!theme)}>
                     {theme ? (
                         <div>

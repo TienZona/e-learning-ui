@@ -22,3 +22,10 @@ export const setStream = (userID, stream) => {
         }
     }
 }
+
+export const removeList = () => {
+    return {
+        type: 'REMOVE_LIST',
+        payload: null
+    }
+}

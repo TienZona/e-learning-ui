@@ -5,10 +5,56 @@
     background-color: #fff;
     border-radius: 30px;
     overflow: hidden;
+    transition: all ease 0.2s;
+    z-index: 10;
+
+    .wrap-box {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: all ease 0.3s;
+
+        &:hover .footer {
+            display: flex;
+        }
+
+        .footer {
+            position: absolute;
+            width: 100%;
+            height: 40px;
+            padding: 0 30px;
+            background: rgba($color: #000000, $alpha: .1);
+            bottom: 0;
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .icon {
+            color: #fff;
+            font-size: 24px;
+            transition: all ease .3s;
+
+            &:hover {
+                cursor: pointer;
+                font-size: 28px;
+            }
+        }
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &:hover .wrap-box {
+        opacity: 1;
+    }
 }
 
 .video {
     position: absolute;
     width: 100%;
     height: 100%;
+    z-index: 10;
 }

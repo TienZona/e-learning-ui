@@ -23,7 +23,7 @@
             width: 100%;
             height: 40px;
             padding: 0 30px;
-            background: rgba($color: #000000, $alpha: .1);
+            background: rgba($color: #000000, $alpha: 0.1);
             bottom: 0;
             display: flex;
             justify-content: end;
@@ -34,7 +34,7 @@
         .icon {
             color: #fff;
             font-size: 24px;
-            transition: all ease .3s;
+            transition: all ease 0.3s;
 
             &:hover {
                 cursor: pointer;
@@ -50,6 +50,46 @@
     &:hover .wrap-box {
         opacity: 1;
     }
+
+    .frame-image {
+        position: absolute;
+        inset: 0;
+        background-color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .frame-name {
+        position: absolute;
+        width: max-content;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .frame-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid red;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        h1 {
+            background-color: rgba($color: #ed4e8b, $alpha: .5);
+            border-radius: 20px;
+            padding: 6px 30px;
+            margin-top: 20px;
+            font-size: 24px;
+            color: #fff;
+        }
+    }
 }
 
 .video {
@@ -57,4 +97,28 @@
     width: 100%;
     height: 100%;
     z-index: 10;
+}
+
+.btn {
+    width: 24px;
+    height: 30px;
+    font-size: 14px;
+    color: #333;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.5);
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all ease 0.3s;
+
+    &:hover {
+        background-color: #d73084;
+        color: #fff;
+    }
+}
+
+.active {
+    background-color: #d73084 !important;
+    color: #fff !important;
 }

@@ -13,7 +13,7 @@ function FeatureBox() {
         heading: '1 + 1 = ?',
         answers: [
             {
-                content: 'Hom nay toi dep trai qua qua la dep trai luony',
+                content: '1',
                 vote: 100,
             },
             {

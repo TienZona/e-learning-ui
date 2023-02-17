@@ -24,11 +24,38 @@ const userReducer = (state = initialState, action) => {
         case 'SET_STREAM': {
             const newList = state.list.map((item) => {
                 if (item.peerID === action.payload.userID) {
-                    item.stream = action.payload.stream;
+                    item.stream.push(action.payload.stream);
                 }
                 return item;
             });
 
+            return {
+                ...state,
+                list: newList,
+            };
+        }
+
+        case 'SET_AUDIO': {
+            const newList = state.list.map((item) => {
+                if (item.peerID === action.payload.userID) {
+                    item.audio = action.payload.audio;
+                }
+                return item;
+            });
+
+            return {
+                ...state,
+                list: newList,
+            };
+        }
+
+        case 'DELETE_STREAM': {
+            const newList = state.list.map((item) => {
+                if (item.peerID === action.payload.userID) {
+                    item.stream = [];
+                }
+                return item;
+            });
             return {
                 ...state,
                 list: newList,
@@ -41,6 +68,7 @@ const userReducer = (state = initialState, action) => {
                 list: []
             }
         }
+
         default:
             return state;
     }

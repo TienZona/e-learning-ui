@@ -23,6 +23,25 @@ export const setStream = (userID, stream) => {
     }
 }
 
+export const setAudio = (userID, audio) => {
+    return {
+        type: 'SET_AUDIO',
+        payload: {
+            userID,
+            audio
+        }
+    }
+}
+
+export const deleteStream = (userID) => {
+    return {
+        type: 'DELETE_STREAM',
+        payload: {
+            userID
+        }
+    }
+}
+
 export const removeList = () => {
     return {
         type: 'REMOVE_LIST',

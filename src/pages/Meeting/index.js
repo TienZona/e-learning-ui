@@ -6,19 +6,16 @@ import { Peer } from 'peerjs';
 import io from 'socket.io-client';
 
 // material UI
-// import Box from '@mui/material/Box';
-// // import Button from '@mui/material/Button';
-// import Typography from '@mui/material/Typography';
-// import Modal from '@mui/material/Modal';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import Tooltip from '@mui/material/Tooltip';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import VideoFrame from '~/components/Meeting/VideoFrame/VideoFrame';
 import ToolBar from '~/components/Meeting/ToolBar';
 import SliderUser from '~/components/Meeting/SliderUser';
 import ChatBox from '~/components/Meeting/ChatBox';
 import UserItem from '~/components/Meeting/UserItem';
-import { addListUser, addUser, setStream, removeList } from '~/redux/actions/user';
+import { addListUser, addUser, setStream, removeList, setAudio, deleteStream } from '~/redux/actions/user';
 import ToolHost from '~/components/Meeting/ToolHost';
 import FeatureBox from '~/components/Meeting/FeatureBox';
 
@@ -32,21 +29,21 @@ function Meeting() {
     const [isScreen, setIsScreen] = useState(false);
     const [screenShare, setScreenShare] = useState(null);
     const [streaming, setStreaming] = useState();
+    const [audioStream, setAudioStream] = useState(null);
     const [roomId, setRoomID] = useState('');
     const [peerID, setPeerID] = useState(null);
     const peerInstance = useRef(null);
-    const remoteVideoRef = useRef(null);
     const currentUserVideoRef = useRef(null);
-    const [listRemoteStream, setListRemote] = useState([]);
-
+    const [userFrame, setUserFrame] = useState(null)
     // redux
     // const [users, setUsers] = useState([]);
     const users = useSelector((state) => state.user.list);
-    const username = useSelector((state) => state.auth.username);
+    const username = useSelector((state) => state.auth.name);
+    const auth = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
     const openStream = () => {
-        const config = { audio: true, video: { width: 800, height: 450 } };
+        const config = { audio: false, video: { width: 800, height: 450 } };
         return (
             navigator.mediaDevices.getUserMedia(config) ||
             navigator.mediaDevices.webkitGetUserMedia(config) ||
@@ -55,8 +52,18 @@ function Meeting() {
         );
     };
 
-    function shareScreen() {
-        const config = { cursor: true };
+    const openAudio = () => {
+        const config = { audio: true };
+        return (
+            navigator.mediaDevices.getUserMedia(config) ||
+            navigator.mediaDevices.webkitGetUserMedia(config) ||
+            navigator.mediaDevices.mozGetUserMedia(config) ||
+            navigator.mediaDevices.msGetUserMedia(config)
+        );
+    };
+
+    function openScreenShare() {
+        const config = { cursor: { width: 800, height: 450 } };
         return (
             navigator.mediaDevices.getDisplayMedia(config) ||
             navigator.mediaDevices.webkitGetDisplayMedia(config) ||
@@ -64,22 +71,14 @@ function Meeting() {
             navigator.mediaDevices.msGetDisplayMedia(config)
         );
     }
-    // stop both mic and camera
-    function stopBothVideoAndAudio(stream) {
-        stream.getTracks().forEach(function (track) {
-            if (track.readyState === 'live') {
-                track.stop();
-            }
-        });
-    }
 
     // stop only camera
     function stopVideoOnly(stream) {
         stream.getTracks().forEach(function (track) {
-            if (track.readyState === 'live' && track.kind === 'video') {
-                track.stop();
-            }
+            track.stop();
         });
+        currentUserVideoRef.current.srcObject = null;
+        
     }
 
     // stop only mic
@@ -106,11 +105,10 @@ function Meeting() {
                     userID: USER_ID,
                     email: 'demo@gmail.com',
                     peerID: id,
-                    stream: null,
+                    stream: [],
+                    audio: null,
                 };
                 socket.emit('join_room', ROOM_ID, user, id);
-                console.log('join room ' + ROOM_ID);
-
                 dispatch(addUser(user));
             }
 
@@ -120,18 +118,32 @@ function Meeting() {
         peer.on('call', (call) => {
             call.answer(streaming);
             call.on('stream', function (reStream) {
-                remoteVideoRef.current.srcObject = reStream;
-                remoteVideoRef.current.play();
-                console.log(reStream);
-                setListRemote((prev) => [...prev, reStream]);
+                reStream.getTracks().forEach(function (track) {
+                    if (track.kind === 'audio') {
+                        // set audio redux
+                        dispatch(setAudio(call.peer, reStream));
+                    }
+                    if (track.kind === 'video' && track) {
+                        const user = users.filter((user) => user.peerID === call.peer);
+                        console.log(users, call.peer);
+                        if (user.length) {
+                            // set stream camera redux
+                            dispatch(setStream(call.peer, reStream));
+                        } else {
+                            // set screen share redux
+                            dispatch(setStream(call.peer, reStream));
+                        }
+                    }
+                });
             });
+
 
             call.on('close', () => {
                 console.log('user close stream');
             });
         });
-
         peerInstance.current = peer;
+        setUserFrame(auth)
 
         return () => {
             dispatch(removeList());
@@ -139,34 +151,23 @@ function Meeting() {
     }, []);
 
     useEffect(() => {
-        console.log(users);
-    }, [users]);
-
-    useEffect(() => {
-        socket.on('receive_user_join', (room, newUser) => {
+        socket.on('receive_user_join', (room) => {
             dispatch(addListUser(room.users));
-            // call(newUser.peerID);
         });
 
         socket.on('receive_user_disconnected', (room) => {
+            console.log('receive_user_disconnected');
             dispatch(addListUser(room.users));
-        })
+        });
     }, [socket]);
 
-    useEffect(() => {
-        console.log(listRemoteStream);
-    }, [listRemoteStream]);
+    // call camera stream
 
-    const call = (remotePeerId) => {
-        openStream().then((stream) => {
-            currentUserVideoRef.current.srcObject = stream;
-            currentUserVideoRef.current.play();
-            const call = peerInstance.current.call(remotePeerId, stream);
+    const callCamera = (remotePeerId, stream) => {
+        const call = peerInstance.current.call(remotePeerId, stream);
 
-            call.on('stream', (remoteStream) => {
-                remoteVideoRef.current.srcObject = remoteStream;
-                remoteVideoRef.current.play();
-            });
+        call.on('stream', (remoteStream) => {
+            console.log(remoteStream);
         });
     };
 
@@ -175,57 +176,97 @@ function Meeting() {
             openStream().then((stream) => {
                 currentUserVideoRef.current.srcObject = stream;
                 currentUserVideoRef.current.play();
+
                 setStreaming(stream);
-                // console.log(peerInstance.current)
+
+                stream.type = 'camera';
+                users.forEach((user) => {
+                    if (user.name !== username) {
+                        callCamera(user.peerID, stream);
+                    }
+                });
+
                 dispatch(setStream(peerID, stream));
             });
         } else {
             if (streaming) {
-                stopBothVideoAndAudio(streaming);
+                stopVideoOnly(streaming);
                 setStreaming(null);
-                console.log('stop camera');
-                console.log(users);
+                dispatch(deleteStream(peerID));
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isCamera]);
 
+    // call screen stream
 
+    const callScreen = (remotePeerId, stream) => {
+        const call = peerInstance.current.call(remotePeerId, stream);
+
+        call.on('stream', (remoteStream) => {
+            console.log(remoteStream);
+        });
+    };
 
     useEffect(() => {
         if (isScreen) {
-            shareScreen().then((screenStream) => {
-                currentUserVideoRef.current.srcObject = screenStream;
+            openScreenShare().then((stream) => {
+                currentUserVideoRef.current.srcObject = stream;
                 currentUserVideoRef.current.play();
-                setScreenShare(screenStream);
+
+                users.forEach((user) => {
+                    if (user.name !== username) {
+                        callScreen(user.peerID, stream);
+                    }
+                });
+                setScreenShare(stream);
+                dispatch(setStream(peerID, stream));
             });
         } else {
             if (screenShare) {
-                screenShare.getTracks().forEach(function (track) {
-                    if (track.readyState === 'live') {
-                        track.stop();
-                    }
-                });
+                stopVideoOnly(screenShare);
+
+                dispatch(deleteStream(peerID));
             }
         }
     }, [isScreen]);
 
+    // call audio stream
+
+    const callAudio = (remotePeerId, stream) => {
+        const call = peerInstance.current.call(remotePeerId, stream);
+
+        call.on('stream', (remoteStream) => {
+            console.log(remoteStream);
+        });
+    };
+
     useEffect(() => {
-        if (streaming) {
-            if (!isAudio) {
-                stopAudioOnly(streaming);
-            } else {
-                // stream.getTracks().forEach(function (track) {
-                //     if (track.readyState === 'live' && track.kind === 'audio') {
-                //         console.log(track)
-                //     }
-                // });
+        if (isAudio) {
+            openAudio().then((stream) => {
+                dispatch(setAudio(peerID, stream));
+                setAudioStream(stream);
+                users.forEach((user) => {
+                    if (user.name !== username) {
+                        callAudio(user.peerID, stream);
+                    }
+                });
+            });
+        } else {
+            if (audioStream) {
+                dispatch(setAudio(peerID, null));
+                stopAudioOnly(audioStream);
             }
         }
     }, [isAudio]);
 
     const handleCopyRight = () => {
         navigator.clipboard.writeText(roomId);
+    };
+
+    const handleSelectUser = (user) => {
+        setUserFrame(user);
+        console.log(user)
     };
 
     return (
@@ -245,7 +286,8 @@ function Meeting() {
                         <FeatureBox />
                     </div>
                     <div className={cx('mid-content') + ' col-span-8'}>
-                        <VideoFrame videoTag={currentUserVideoRef} />
+                        <VideoFrame videoTag={currentUserVideoRef} user={userFrame}/>
+
                         <ToolBar
                             camera={isCamera}
                             onCamera={setIsCamera}
@@ -262,10 +304,14 @@ function Meeting() {
                 <div className={cx('footer') + ' grid grid-cols-12 gap-8'}>
                     <div className={cx('left') + ' col-span-2'}></div>
                     <div className={cx('mid') + ' col-span-8'}>
-                        {users.length < 4 ? (
+                        {!users ? (
+                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                <CircularProgress color="secondary" />
+                            </div>
+                        ) : users.length < 4 ? (
                             <div className="flex justify-evenly">
                                 {users.map((user, index) => (
-                                    <UserItem key={index} user={user} stream={streaming} />
+                                    <UserItem key={index} user={user} handleSelect={handleSelectUser} />
                                 ))}
                             </div>
                         ) : (

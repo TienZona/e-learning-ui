@@ -1,8 +1,11 @@
 const initialState = {
-    id: '',
-    username: '',
+    userID: '',
+    name: '',
     email: '',
     avatar: '',
+    peerID: '',
+    stream: [],
+    audio: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -10,10 +13,13 @@ const authReducer = (state = initialState, action) => {
         case 'ADD_AUTH': {
             return {
                 ...state,
-                id: action.payload.id,
-                username: action.payload.username,
+                userID: action.payload.userID,
+                name: action.payload.name,
                 email: action.payload.email,
                 avatar: action.payload.avatar,
+                peerID: action.payload.peerID,
+                stream: action.payload.stream,
+                audio: action.payload.audio,
             };
         }
         default:

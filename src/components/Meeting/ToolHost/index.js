@@ -5,6 +5,7 @@ import { faGear } from '@fortawesome/free-solid-svg-icons';
 import iconSurvey from '~/assets/icon/survey-results.png';
 import iconRandom from '~/assets/icon/random.png';
 import iconExem from '~/assets/icon/exam.png';
+import iconBoard from '~/assets/icon/board.png';
 import { useState } from 'react';
 import SurveyModal from '../SurveyModal';
 import ExamModal from '../ExamModal';
@@ -51,6 +52,10 @@ function ToolHost() {
                     <div className={cx('item')}  onClick={handleOpenExam}>
                         <img src={iconExem} alt="" />
                         <span>Exam</span>
+                    </div>
+                    <div className={cx('item')}  onClick={handleOpenExam}>
+                        <img src={iconBoard} alt="" />
+                        <span>Board</span>
                     </div>
                 </div>
             </div>

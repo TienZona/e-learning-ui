@@ -1,15 +1,23 @@
 import MeetingLayout from '~/components/Layout/MeetingLayout';
 import AuthLayout from '~/components/Layout/AuthLayout';
+import ClassRoomLayout from '~/components/Layout/ClassRoomLayout';
+import ClassLayout from '~/components/Layout/ClassLayout';
 
 import Home from '~/pages/Home';
 import Meeting from '~/pages/Meeting';
 import Meet from '~/pages/Meet';
 import Auth from '~/pages/Auth';
 import Test from '~/pages/Test';
+import ClassRoom from '~/pages/ClassRoom';
+import Class from '~/pages/Class';
 
 const publicRoutes = [
     {
         path: '/',
+        component: Home,
+    },
+    {
+        path: '/home',
         component: Home,
     },
     {
@@ -23,7 +31,7 @@ const publicRoutes = [
         layout: MeetingLayout,
     },
     {
-        path: '/auth',
+        path: '/account',
         component: Auth,
         layout: AuthLayout,
     },
@@ -31,6 +39,16 @@ const publicRoutes = [
         path: '/meeting',
         component: Test,
         layout: MeetingLayout,
+    },
+    {
+        path: '/classroom',
+        component: Class,
+        layout: ClassLayout,
+    },
+    {
+        path: '/classroom/:id',
+        component: ClassRoom,
+        layout: ClassRoomLayout,
     },
 ];
 

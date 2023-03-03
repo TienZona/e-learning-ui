@@ -1,0 +1,26 @@
+.wrap {
+    position: fixed;
+    margin-top: 100px;
+    width: 100%;
+    height: max-content;
+
+    h3 {
+        color: #fff;
+        margin-bottom: 10px;
+
+    }
+
+    .item {
+        display: flex;
+        margin-bottom: 10px;
+        h2 {
+            margin-left: 10px;
+            width: 190px;
+            font-size: 16px;
+            color: #7df2ff;
+            white-space: nowrap;
+            overflow: hidden !important;
+            text-overflow: ellipsis;
+        }
+    }
+}

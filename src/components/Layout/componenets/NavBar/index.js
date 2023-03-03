@@ -11,10 +11,15 @@ const cx = classNames.bind(styles);
 function NavBar() {
     return (
         <div className={cx('box')}>
-            <div className={cx('item', 'focus')}>
-                <img src="https://noithattinnghia.com/wp-content/uploads/2019/03/cropped-icon-home-cam.png" alt="" />
-                <span>Home</span>
-            </div>
+            <Link to="/home">
+                <div className={cx('item', 'focus')}>
+                    <img
+                        src="https://noithattinnghia.com/wp-content/uploads/2019/03/cropped-icon-home-cam.png"
+                        alt=""
+                    />
+                    <span>Home</span>
+                </div>
+            </Link>
             <div className={cx('navbar')}>
                 <Link to="/meet">
                     <div className={cx('item')}>
@@ -23,11 +28,13 @@ function NavBar() {
                     </div>
                 </Link>
 
-                <div className={cx('item')}>
-                    <img src={iconClassRoom} alt="class" />
-                    <span>Class</span>
-                </div>
-                <Link to="/auth">
+                <Link to="/classroom">
+                    <div className={cx('item')}>
+                        <img src={iconClassRoom} alt="class" />
+                        <span>Class</span>
+                    </div>
+                </Link>
+                <Link to="/account">
                     <div className={cx('item')}>
                         <img src={iconUser} alt="user" />
                         <span>Login</span>

@@ -57,7 +57,7 @@ function UserItem({ user, handleSelect }) {
                 <div className={cx('frame-name')}>
                     <div className={cx('frame-avatar')}>
                         <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU"
+                            src={user.avatar}
                             alt=""
                         />
                     </div>

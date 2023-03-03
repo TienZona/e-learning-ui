@@ -7,7 +7,7 @@ const cx = classNames.bind(styles);
 function ItemUser(props) {
     return (
         <div className={cx('box')}>
-            <AvatarCircle avatar={props.user.avatar} border="#fff" size="50px" />
+            <AvatarCircle avatar={props.user.avatar} border="aqua" size="40px" />
             <div className={cx('infor')}>
                 <h2>{props.user.name}</h2>
                 <span>{props.user.email}</span>

@@ -1,0 +1,128 @@
+.header {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #fff;
+
+    .icon {
+        margin-top: -20px;
+        margin-left: 20px;
+        width: 150px;
+        height: 130px;
+    }
+
+    .search {
+        position: fixed;
+        z-index: 10;
+        left: 50%;
+        input {
+            width: 160px;
+            padding: 10px 20px;
+            height: 44px;
+            border-radius: 22px;
+            transition: all ease 0.2s;
+            box-shadow: 0 0 2px 4px rgba($color: #fff, $alpha: 0.1);
+        }
+
+        input:focus {
+            padding: 0 60px 0 20px;
+            width: 300px;
+            height: 50px;
+            border-radius: 25px;
+            border: 2px solid rgb(255, 111, 0);
+        }
+        input:focus ~ button {
+            opacity: 1;
+        }
+
+        button {
+            width: 44px;
+            height: 40px;
+            color: #fff;
+            transition: all ease 0.3s;
+            margin-left: -50px;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            background-color: #1c1f2e;
+            opacity: 0;
+            box-shadow: 0 0 1px 1px rgba($color: #000000, $alpha: 0.2);
+        }
+
+        button:hover {
+            cursor: pointer;
+            background-color: #333;
+        }
+    }
+
+    .btn-bell {
+        font-size: 24px;
+        color: #fff;
+    }
+}
+
+.left {
+    width: 100%;
+    height: 100%;
+
+    .navbar {
+        margin-top: 50px;
+    }
+
+    .nav-item {
+        width: max-content;
+        padding: 10px;
+        display: flex;
+        border-radius: 6px;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 30px;
+        color: #fff;
+        border: 2px solid transparent;
+        transition: all ease .2s;
+    }
+
+    .nav-item:hover {
+        cursor: pointer;
+        border: 2px solid rgb(255, 81, 0);
+    }
+
+    .active {
+        border: 2px solid red
+    }
+
+    .icon {
+       font-size: 30px;
+       color: blue;
+    }
+}
+
+.right {
+    width: 100%;
+    height: 100%;
+
+    .container {
+        margin-top: 40px;
+        .head {
+        }
+
+        .body {
+            color: #fff;
+
+            h1 {
+                width: max-content;
+                font-size: 24px;
+                font-weight: 550;
+                margin-bottom: 20px;
+            }
+
+            .list-new {
+            }
+        }
+    }
+}

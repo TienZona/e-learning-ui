@@ -38,7 +38,6 @@ function Meeting() {
     // redux
     // const [users, setUsers] = useState([]);
     const users = useSelector((state) => state.user.list);
-    const username = useSelector((state) => state.auth.name);
     const auth = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
@@ -98,12 +97,11 @@ function Meeting() {
 
         peer.on('open', (id) => {
             if (ROOM_ID !== '' && id !== '') {
-                const USER_ID = Date.now();
                 const user = {
-                    avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-                    name: username,
-                    userID: USER_ID,
-                    email: 'demo@gmail.com',
+                    avatar: auth.avatar,
+                    name: auth.name,
+                    userID: auth.userID,
+                    email: auth.email,
                     peerID: id,
                     stream: [],
                     audio: null,
@@ -181,7 +179,7 @@ function Meeting() {
 
                 stream.type = 'camera';
                 users.forEach((user) => {
-                    if (user.name !== username) {
+                    if (user.name !== auth.name) {
                         callCamera(user.peerID, stream);
                     }
                 });
@@ -215,7 +213,7 @@ function Meeting() {
                 currentUserVideoRef.current.play();
 
                 users.forEach((user) => {
-                    if (user.name !== username) {
+                    if (user.name !== auth.name) {
                         callScreen(user.peerID, stream);
                     }
                 });
@@ -247,7 +245,7 @@ function Meeting() {
                 dispatch(setAudio(peerID, stream));
                 setAudioStream(stream);
                 users.forEach((user) => {
-                    if (user.name !== username) {
+                    if (user.name !== auth.name) {
                         callAudio(user.peerID, stream);
                     }
                 });
@@ -298,7 +296,7 @@ function Meeting() {
                         />
                     </div>
                     <div className={cx('right-content') + ' col-span-2'}>
-                        <ChatBox socket={socket} username={username} room={roomId} />
+                        <ChatBox socket={socket} username={auth.name} room={roomId} />
                     </div>
                 </div>
                 <div className={cx('footer') + ' grid grid-cols-12 gap-8'}>

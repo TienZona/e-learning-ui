@@ -1,38 +1,27 @@
 import classNames from 'classnames/bind';
 import styles from './Meet.module.scss';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import uuid from 'react-uuid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVideo } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { addAuth } from '~/redux/actions/auth';
 
 const cx = classNames.bind(styles);
 
 function Meet() {
-    const username = useSelector((state) => state.auth.name);
-    const [name, setName] = useState('');
-    const dispatch = useDispatch();
+    const auth = useSelector((state) => state.auth);
     const [inputValue, setInputValue] = useState('');
 
-    const submit = (e) => {
-        const user = {
-            userID: Date.now(),
-            name: name,
-            email: 'demo@gmail.com',
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-            peerID: '',
-            stream: [],
-            audio: null,
-        };
-        dispatch(addAuth(user));
-        setName('');
+    const getDayName = (dayIndex) => {
+        let daysArray = ['Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy', 'Chủ nhật'];
+        return daysArray[dayIndex - 1];
     };
 
-    useEffect(() => {
-        console.log(username);
-    }, [username]);
+    const handleNavigator = () => {
+        window.location.href = `/meeting/${inputValue}`;
+    };
 
     return (
         <div className={cx('')}>
@@ -45,45 +34,48 @@ function Meet() {
                     </div>
                 </div>
             </header>
-            <div className={cx('container') + ' container'}>
-                <div className={cx('slide')}>
-                    {!username ? (
-                        <div className={cx('slide-2')}>
-                            <h3>TÊN BẠN LÀ</h3>
-                            <div className={cx('input-name')}>
-                                <input
-                                    type="text"
-                                    placeholder="Nhập tên gọi của bạn"
-                                    value={name}
-                                    onChange={(e) => {
-                                        setName(e.target.value);
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') submit();
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    ) : (
-                        <div className={cx('slide-3')}>
-                            <h3> Hii! {username}</h3>
-                            <Link to={'/meeting/' + uuid()} relative="path">
-                                <button>Tạo cuộc họp </button>
-                            </Link>
+            <div className={cx('container') + ' container grid grid-cols-12 gap-4'}>
+                <div className={cx('content-left') + ' col-span-6'}>
+                    <div className={cx('timestamp')}>
+                        <h3>
+                            {getDayName(new Date().getDay()) +
+                                ', ' +
+                                new Date().getDate() +
+                                ' thg ' +
+                                (new Date().getMonth() + 1) +
+                                ', ' +
+                                new Date().getFullYear()}
+                        </h3>
+                    </div>
+                    <div className={cx('slide-3')}>
+                        <h3> Hi! {auth.name}</h3>
+                        <Link to={'/meeting/' + uuid()} relative="path">
+                            <button className={cx('button')}>
+                                <FontAwesomeIcon icon={faVideo} className={cx('icon')} />
+                                Tạo cuộc họp
+                            </button>
+                        </Link>
 
-                            <div className={cx('input-name')}>
-                                <input
-                                    type="text"
-                                    placeholder="Nhập ID ROOM"
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                />
-                                <Link to={'/meeting/'+ inputValue} relative="path">
-                                    <button>Join</button>
-                                </Link>
-                            </div>
+                        <div className={cx('input-name')}>
+                            <input
+                                type="text"
+                                placeholder="Nhập ID phòng họp mặt"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                            />
+                            <Link to={'/meeting/' + inputValue} relative="path" className={cx('btn')}>
+                                <button>Tham gia</button>
+                            </Link>
                         </div>
-                    )}
+                    </div>
+                </div>
+                <div className={cx('content-right') + ' col-span-6'}>
+                    <img
+                        src="https://myviewboard.com/blog/wp-content/uploads/2020/08/MP0027-01-scaled.jpg"
+                        alt=""
+                        className={cx('img')}
+                    />
+                    <h2>Hãy nhớ kiểm tra micro và camera khi vào phòng họp nhé!</h2>
                 </div>
             </div>
         </div>

@@ -1,0 +1,45 @@
+.wrap {
+    padding: 0 100px;
+    font-size: 16px;
+    color: #fff;
+
+    .heading {
+        display: flex;
+        align-items: center;
+        width: max-content;
+        border-bottom: 1px solid #fff;
+        padding: 10px;
+        margin-bottom: 30px;
+        color: aqua;
+    }
+
+    h1 {
+        font-size: 20px;
+        font-weight: 550;
+        margin-right: 10px;
+    }
+
+    .item {
+        display: flex;
+        align-self: center;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        border-bottom: 3px solid #fff;
+        border-radius: 3px;
+
+        div {
+            margin-left: 10px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        span {
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+        }
+    }
+}

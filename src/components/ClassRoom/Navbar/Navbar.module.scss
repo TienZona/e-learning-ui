@@ -1,0 +1,71 @@
+$color-1: #ffffff;
+$color-2: #2dffb9;
+
+.wrap {
+    position: fixed;
+    margin-top: 100px;
+    width: 80px;
+
+    .list {
+        position: absolute;
+        width: 100%;
+        top: 50px;
+        padding: 10px;
+
+        .item {
+            position: relative;
+            width: 100px;
+            height: 60px;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+            .icon {
+                font-size: 20px;
+                margin-bottom: 6px;
+                color: #d6f4f7;
+                transition: all ease 0.2s;
+            }
+
+            h3 {
+                font-size: 14px;
+                padding: 0 10px 0 10px;
+            }
+
+            span {
+                position: absolute;
+                bottom: 0;
+                left: 10px;
+                width: 0;
+                height: 4px;
+                border-radius: 2px;
+                background: linear-gradient(to right, $color-1, $color-2);
+                transition: 0.4s;
+            }
+
+            &.active span {
+                width: 80%;
+                transition: 0.2s;
+            }
+
+            &.active .icon {
+                color: $color-1;
+            }
+
+            &.active h3 {
+                color: $color-2;
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            &:hover .icon {
+                color: $color-1;
+            }
+        }
+    }
+}

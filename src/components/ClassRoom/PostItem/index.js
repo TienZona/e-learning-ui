@@ -82,7 +82,7 @@ function PostItem({ post }) {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={styles.modal} className={cx('modal')}>
+                <Box sx={style} className={cx('modal')}>
                     <h2>Câu trả lời không quá 160 ký tự !</h2>
                     <div>
                         <input type="text" className={cx('modal-input')} placeholder="Nhập câu trả lời..." />

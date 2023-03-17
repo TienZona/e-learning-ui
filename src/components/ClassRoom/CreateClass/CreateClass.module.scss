@@ -3,6 +3,48 @@
     z-index: 100;
 }
 
+.theme-item {
+    width: 80%;
+    height: 100px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.slide {
+    margin: 20px 0;
+}
+
+.type {
+    color: #fff;
+    margin-bottom: 30px;
+
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    input {
+        padding: 10px;
+        border-radius: 6px;
+        background-color: rgba($color: #fff, $alpha: 0.1);
+    }
+
+    input:focus {
+        border-bottom: 1px solid #fff;
+    }
+
+    button {
+        margin-left: 20px;
+        padding: 10px 15px;
+        border: none;
+        transition: all ease 0.3s;
+    }
+
+    button:hover {
+        background-color: rgb(55, 165, 28);
+        border-radius: 12px;
+    }
+}
+
 .box {
     position: relative;
     width: 100%;

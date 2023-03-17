@@ -40,8 +40,8 @@ function ListOnline() {
             </div>
 
             <h3>Bạn học đang online</h3>
-            {users.map((user) => (
-                <div className={cx('item')}>
+            {users.map((user, index) => (
+                <div className={cx('item')} key={index}>
                     <div className={cx('avatar')}>
                         <AvatarCircle size="30px" avatar={user.avatar} border="blue" />
                         <span></span>

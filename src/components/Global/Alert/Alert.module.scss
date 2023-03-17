@@ -1,0 +1,24 @@
+.alert {
+    min-width: 200px;
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    animation: fadeIn 1s;
+    animation-delay: 2s;
+}
+
+@keyframes fadeIn {
+    from {
+        left: -100%;
+    }to{
+        left: 20px;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        bottom: 20px;
+    }to {
+        bottom: -100%;
+    }
+}

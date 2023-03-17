@@ -10,6 +10,7 @@ import Auth from '~/pages/Auth';
 import Test from '~/pages/Test';
 import ClassRoom from '~/pages/ClassRoom';
 import Class from '~/pages/Class';
+import CreateClass from '~/components/ClassRoom/CreateClass';
 
 const publicRoutes = [
     {
@@ -50,6 +51,11 @@ const publicRoutes = [
         component: ClassRoom,
         layout: ClassRoomLayout,
     },
+    {
+        path: '/classroom/edit/:id',
+        component: CreateClass,
+        layout: ClassLayout
+    }
 ];
 
 const privateRoutes = [];

@@ -50,6 +50,7 @@ function ClassRoom() {
                             (selectFrame === 'calendar' && <Calendar />) ||
                             (selectFrame === 'member' && <Member />)}
                     </div>
+                    <h1>hello</h1>
                 </div>
                 <div className="col-span-2">
                     <ListOnline />

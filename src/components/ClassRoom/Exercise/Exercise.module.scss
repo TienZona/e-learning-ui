@@ -1,0 +1,122 @@
+.wrap {
+    border-top: 2px solid aqua;
+    padding: 20px 0;
+
+    .title {
+        margin: 10px 0;
+        font-size: 24px;
+        color: aqua;
+    }
+
+    .icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .lock {
+        float: right;
+    }
+
+    .line {
+        width: 2px;
+        height: 500px;
+    }
+
+    .intruction {
+        width: 100%;
+        height: max-content;
+        border-radius: 12px;
+        padding: 20px;
+        color: #fff;
+        // background-color: #fff;
+    }
+
+    .item {
+        width: 100%;
+        height: 100px;
+        margin-top: 20px;
+        border-radius: 10px 20px 20px 10px;
+        background-color: #e6f9ffb3;
+        overflow: hidden;
+        box-shadow: 4px 4px 4px rgba($color: #fff, $alpha: 0.2);
+        transition: all ease 0.2s;
+        h2 {
+            color: #000;
+            font-weight: 600;
+        }
+
+        p {
+            color: #333;
+        }
+
+        .item-content {
+            width: 348px;
+            border-radius: 6px 20px 20px 6px;
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: rgba($color: #000, $alpha: 0.1);
+        }
+
+        &:hover {
+            cursor: pointer;
+            opacity: 0.9;
+        }
+    }
+
+    .item-img {
+        width: auto;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .submit {
+        margin-top: 30px;
+
+        h2 {
+            font-size: 20px;
+            color: aqua;
+        }
+    }
+
+    .comment-input {
+        position: relative;
+
+        input {
+            width: 380px;
+            padding: 10px;
+            color: aqua;
+            font-size: inherit;
+            font-family: inherit;
+            background-color: transparent;
+            border: 2px solid transparent;
+            border-bottom-color: lightgray;
+        }
+
+        input:focus {
+            outline: none;
+        }
+
+        span {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: aqua;
+            transform-origin: bottom right;
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        input:focus ~ span {
+            transform-origin: bottom left;
+            transform: scaleX(1);
+        }
+    }
+
+    .btn-back {
+        position: fixed;
+        left: 150px;
+        top: 100px;
+    }
+}

@@ -1,37 +1,28 @@
+import axios from 'axios';
 import classNames from 'classnames/bind';
+import { useEffect, useState } from 'react';
 import PostItem from '../PostItem';
 import styles from './Posts.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Posts() {
-    const posts = [
-        {
-            author: {
-                name: 'TienZona',
-                image: '',
-            },
-            created_at: '11:44 2/28/2023',
-            updated_at: null,
-            title: 'Thông báo họp cố vấn',
-            content: 'Helo xin chào các bạn tôi sẽ thông báo hôm nay',
-            comments: [
-                {
-                    author: {
-                        name: 'TienZona',
-                        image: '',
-                    },
-                    created_at: '11:46',
-                    updated_at: null,
-                },
-            ],
-        },
-    ];
+function Posts({ classID, reset }) {
+    const [refresh, setRefresh] = useState(true);
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        axios
+            .get(`http://localhost:3000/api/classroom/post/${classID}`)
+            .then((respone) => {
+                setPosts((prev) => [...respone.data]);
+            })
+            .catch((err) => console.log(err));
+    }, [classID, reset, refresh]);
 
     return (
         <div className={cx('wrap')}>
             {posts.map((post, index) => (
-                <PostItem post={post} key={index} />
+                <PostItem post={post} key={index} refresh={refresh} reset={setRefresh} />
             ))}
         </div>
     );

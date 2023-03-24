@@ -2,42 +2,116 @@ import classNames from 'classnames/bind';
 import Navbar from '~/components/ClassRoom/Navbar';
 import Posts from '~/components/ClassRoom/Posts';
 import styles from './ClassRoom.module.scss';
-import { useState } from 'react';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
+import { useRef, useState } from 'react';
 import { Input } from 'antd';
 import Button from '~/components/Global/Button';
 import ListOnline from '~/components/ClassRoom/ListOnline';
 import Calendar from '~/components/ClassRoom/Calendar';
 import Member from '~/components/ClassRoom/Member';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+
+// material ui
+import { Backdrop, CircularProgress, Box, Modal } from '@mui/material';
+import MenuTool from '~/components/ClassRoom/MenuTool';
+import ModalExercise from '~/components/ClassRoom/ModalExercise';
+import { Modal as ModalAnt, message } from 'antd';
+import Exercise from '~/components/ClassRoom/ExercisePage';
 
 const { TextArea } = Input;
 
 const cx = classNames.bind(styles);
 
 function ClassRoom() {
+    const [reset, setReset] = useState(false);
+    const [ID_CLASS, setID_CLASS] = useState(null);
+    const auth = useSelector((state) => state.auth);
     const [selectFrame, setSelectFrame] = useState('news');
+    const [course, setCourse] = useState(null);
     const [open, setOpen] = useState(false);
+    const [openProgress, setProgress] = useState(false);
+    const [titleInput, setTitleInput] = useState(null);
+    const [contentInput, setContentInput] = useState(null);
+    const titleRef = useRef(null);
+    const contentRef = useRef(null);
+    const [isModalExcer, setIsModalExcer] = useState(false);
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const handleModalExcer = () => setIsModalExcer(true);
 
-    const onChange = (e) => {
-        console.log('Change:', e.target.value);
+    useEffect(() => {
+        setID_CLASS(window.location.href.split('/').reverse()[0]);
+        try {
+            axios
+                .get(`http://localhost:3000/api/class/${ID_CLASS}`)
+                .then((res) => {
+                    setCourse(res.data);
+                })
+                .catch((err) => console.log(err));
+        } catch (err) {
+            console.log(err);
+        }
+    }, [ID_CLASS]);
+
+    const validatorForm = () => {
+        let result = true;
+        if (!contentInput) {
+            result = false;
+            contentRef.current.focus();
+        }
+        if (!titleInput) {
+            result = false;
+            titleRef.current.focus();
+        }
+
+        return result;
     };
+
+    const createPost = () => {
+        if (validatorForm()) {
+            const post = {
+                id_class: ID_CLASS,
+                title: titleInput,
+                content: contentInput,
+                author: {
+                    email: auth.email,
+                    name: auth.name,
+                    avatar: auth.avatar,
+                },
+            };
+            try {
+                axios
+                    .post(`http://localhost:3000/api/classroom/post`, post)
+                    .then((res) => {
+                        setOpen(false);
+                        setTimeout(() => {
+                            setProgress(false);
+                            setReset(!reset);
+                            message.success('Thành công!');
+                        }, 500);
+                        setProgress(true);
+                    })
+                    .catch((err) => console.log(err));
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    };
+
     return (
         <div className={cx('wrap')}>
             <div className={cx('header')}>
                 <div className={cx('heading')}>
-                    <h1>Lop 12A3 2021-2022</h1>
+                    <h1>{course && course.name}</h1>
                 </div>
                 <div className={cx('box')}>
                     {(selectFrame === 'news' && <h1>Các thông báo lớp học</h1>) ||
                         (selectFrame === 'calendar' && <h1>Lịch học</h1>) ||
-                        (selectFrame === 'member' && <h1>Mọi người</h1>)}
-                    <button className={cx('btn-create')} onClick={handleOpen}>
-                        <span>Tạo thông báo </span>
-                        <div />
-                    </button>
+                        (selectFrame === 'member' && <h1>Mọi người</h1>) || 
+                        (selectFrame === 'exercise' && <h1>Bài tập</h1>)}
+                    <MenuTool onClickNoti={handleOpen} onClickExcer={handleModalExcer} />
                 </div>
             </div>
             <div className="grid grid-cols-12 gap-4">
@@ -46,9 +120,10 @@ function ClassRoom() {
                 </div>
                 <div className="col-span-8">
                     <div className={cx('content')}>
-                        {(selectFrame === 'news' && <Posts />) ||
+                        {(selectFrame === 'news' && <Posts reset={reset} classID={ID_CLASS} />) ||
                             (selectFrame === 'calendar' && <Calendar />) ||
-                            (selectFrame === 'member' && <Member />)}
+                            (selectFrame === 'member' && <Member />) ||
+                            (selectFrame === 'exercise' && <Exercise />)}
                     </div>
                     <h1>hello</h1>
                 </div>
@@ -65,16 +140,48 @@ function ClassRoom() {
                 <Box sx={styles.modal} className={cx('modal')}>
                     <h1>THÊM THÔNG BÁO</h1>
                     <b>Tiêu đề</b>
-                    <Input showCount maxLength={50} onChange={(e) => onChange(e)} />
+                    <Input
+                        ref={titleRef}
+                        showCount
+                        maxLength={50}
+                        onChange={(e) => setTitleInput(e.target.value)}
+                        required
+                    />
                     <br />
                     <br />
                     <b>Nội dung</b>
-                    <TextArea showCount style={{ height: 120 }} maxLength={999} onChange={(e) => onChange(e)} />
-                    <div className={cx('modal-btn')}>
+                    <TextArea
+                        ref={contentRef}
+                        showCount
+                        style={{ height: 120 }}
+                        maxLength={999}
+                        onChange={(e) => setContentInput(e.target.value)}
+                        required
+                    />
+                    <div className={cx('modal-btn')} onClick={() => createPost()}>
                         <Button>Thêm</Button>
                     </div>
                 </Box>
             </Modal>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openProgress}
+                onClick={() => setProgress(true)}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <ModalAnt
+                width={1000}
+                centered
+                title="Thêm bài tập"
+                open={isModalExcer}
+                onOk={() => setIsModalExcer(true)}
+                onCancel={() => setIsModalExcer(false)}
+                okType="danger"
+                
+            >
+                <ModalExercise />
+            </ModalAnt>
         </div>
     );
 }

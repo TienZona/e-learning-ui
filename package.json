@@ -6,6 +6,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
     "@coreui/react-chartjs": "^2.1.2",
+    "@cyntler/react-doc-viewer": "^1.12.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@fontsource/roboto": "^4.5.8",
@@ -15,9 +16,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.0.0",
     "@fortawesome/react-fontawesome": "^0.1.17",
     "@mui/icons-material": "^5.11.0",
-    "@mui/material": "^5.11.8",
-    "@mui/styled-engine-sc": "^5.11.0",
-    "@mui/x-date-pickers": "^5.0.17",
+    "@mui/x-date-pickers": "^5.0.20",
     "@react-oauth/google": "^0.8.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -31,6 +30,7 @@
     "normalize.css": "^8.0.1",
     "peerjs": "^1.4.7",
     "react": "^18.2.0",
+    "react-datepicker": "^4.10.0",
     "react-dom": "^18.2.0",
     "react-loading-skeleton": "^3.2.0",
     "react-redux": "^8.0.5",
@@ -40,10 +40,10 @@
     "react-slick": "^0.29.0",
     "react-toastify": "^9.1.1",
     "react-uuid": "^2.0.0",
+    "react-vertical-timeline-component": "^3.6.0",
     "redux": "^4.2.0",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.5.4",
-    "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

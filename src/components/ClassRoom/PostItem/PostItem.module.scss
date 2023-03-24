@@ -4,6 +4,7 @@
     height: max-content;
     border-radius: 12px;
     background-color: #fffffff2;
+    margin-bottom: 50px;
     padding: 0 10px;
     box-shadow: 0 0 5px 5px rgba($color: #ffff, $alpha: 0.13);
 
@@ -17,6 +18,10 @@
         .datetime {
             font-size: 20px;
             font-weight: 550;
+        }
+
+        .time {
+            margin-left: 60px;
         }
 
         .author {
@@ -33,6 +38,33 @@
                 color: blue;
             }
         }
+
+        .delete {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all ease .1s;
+
+            &:hover {
+                cursor: pointer;
+                background-color: rgba($color: #ccc, $alpha: 0.4);
+
+
+            }
+
+            &:hover .icon-delete{
+                color: rgb(245, 67, 18);
+            }
+            .icon-delete {
+                font-size: 20px;
+                color: #333;
+            }
+
+        }
+
     }
 
     .content {

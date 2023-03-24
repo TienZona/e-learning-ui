@@ -21,7 +21,7 @@ function Navbar({active, setActive}) {
                     <h3>Lịch học</h3>
                     <span></span>
                 </div>
-                <div className={cx('item', active === 'homework' && 'active')} onClick={() => setActive('homework')}>
+                <div className={cx('item', active === 'exercise' && 'active')} onClick={() => setActive('exercise')}>
                     <FontAwesomeIcon className={cx('icon')} icon={faBrain} />
                     <h3>Bài tập</h3>
                     <span></span>

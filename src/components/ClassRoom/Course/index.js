@@ -95,7 +95,7 @@ function Course({ course }) {
             setInputValue('');
             inputRef.current.focus();
             inputRef.current.style.border = '1px solid red';
-            alert(1);
+            alert('Sai mat khau!');
         }
     };
 

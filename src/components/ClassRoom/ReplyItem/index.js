@@ -1,11 +1,12 @@
 import classNames from 'classnames/bind';
 import { useState, useEffect } from 'react';
 import AvatarCircle from '~/components/Global/AvatarCircle';
+import { getFormatDate, getTime } from '~/locallibraries/timestamp';
 import styles from './ReplyItem.module.scss';
 
 const cx = classNames.bind(styles);
 
-function ReplyItem() {
+function ReplyItem({ reply }) {
     const [color, setColor] = useState(null);
     const generateColor = () => {
         return Math.random().toString(16).substr(-6);
@@ -18,22 +19,18 @@ function ReplyItem() {
     return (
         <div className={cx('wrap')} style={{ backgroundColor: `#${color}` }}>
             <div className={cx('header')}>
-                <AvatarCircle
-                    size="30px"
-                    border="blue"
-                    avatar=""
-                />
+                <AvatarCircle size="30px" border="blue" avatar={reply.author.avatar} />
                 <div className={cx('infor')}>
-                    <h4>Chung Phat Tien</h4>
-                    <p>tienb1910000@student.ctu.edu.vn</p>
+                    <h4>{reply.author.name}</h4>
+                    <p>{reply.author.email}</p>
                 </div>
             </div>
             <div className={cx('content')}>
-                <p>Hello xin chaof cvao bvbn toi ten la chung phat ien klaskjd aljasd asd sd</p>
+                <p>{reply.content}</p>
             </div>
             <div className="time">
-                <span>1 thg 3, 2023</span>
-                <span>12:12</span>
+                <span>{getFormatDate(reply.created_at)}</span>
+                <span>{getTime(reply.created_at)}</span>
             </div>
         </div>
     );

@@ -51,6 +51,7 @@
 
         .item-content {
             width: 348px;
+            height: 91px;
             border-radius: 6px 20px 20px 6px;
             padding: 10px 20px;
             margin-left: 10px;
@@ -114,9 +115,7 @@
         }
     }
 
-    .btn-back {
-        position: fixed;
-        left: 150px;
-        top: 100px;
+    .btn-download {
+        background-color: rgb(11, 137, 241);
     }
 }

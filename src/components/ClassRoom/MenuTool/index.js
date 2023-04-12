@@ -7,19 +7,23 @@ import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
-function MenuTool({onClickNoti, onClickExcer}) {
+function MenuTool({ onClickNoti, onClickExcer, onClickCalender }) {
     const [isIconA, setIconA] = useState(false);
 
     const handleClick = (e) => {
-        if(e === 'noti'){
-            onClickNoti(true)
+        if (e === 'noti') {
+            onClickNoti(true);
         }
-        if(e === 'excer'){
+        if (e === 'excer') {
             onClickExcer(true);
         }
 
-        setIconA(false)
-    }
+        if(e === 'calender') {
+            onClickCalender(true);
+        }
+
+        setIconA(false);
+    };
 
     return (
         <div className={cx('wrap')}>
@@ -27,9 +31,15 @@ function MenuTool({onClickNoti, onClickExcer}) {
                 <AddIcon className={cx('icon', isIconA ? 'icon-in' : 'icon-out')} />
             </div>
             <div className={cx('list')}>
-                <button className={cx('item', isIconA ? 'fade-in' : 'fade-out')} onClick={() => handleClick('noti')}>Thông báo</button>
-                <button className={cx('item', isIconA ? 'fade-in' : 'fade-out')} >Lịch học</button>
-                <button className={cx('item', isIconA ? 'fade-in' : 'fade-out')} onClick={() => handleClick('excer')}>Bài tập</button>
+                <button className={cx('item', isIconA ? 'fade-in' : 'fade-out')} onClick={() => handleClick('noti')}>
+                    Thông báo
+                </button>
+                <button className={cx('item', isIconA ? 'fade-in' : 'fade-out')} onClick={() => handleClick('calender')}>
+                    Lịch học
+                </button>
+                <button className={cx('item', isIconA ? 'fade-in' : 'fade-out')} onClick={() => handleClick('excer')}>
+                    Bài tập
+                </button>
             </div>
         </div>
     );

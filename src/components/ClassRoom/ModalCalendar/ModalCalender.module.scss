@@ -1,0 +1,58 @@
+.wrap {
+    width: 100%;
+    height: max-content;
+
+    .content-left {
+        width: 100%;
+        height: 100%;
+        padding: 0 20px;
+        border-radius: 10px;
+        background-color: #fff;
+
+        .input-text {
+            width: 100%;
+            font-size: 40px !important;
+        }
+
+        .upload {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .list-icon {
+            margin-top: 20px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                box-shadow: 2px 4px 4px rgba($color: #000000, $alpha: 0.2);
+            }
+        }
+    }
+
+    .date-time {
+        margin: 6px 10px;
+    }
+
+    .datepicker {
+        width: 200px;
+        padding: 8px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid #c4c4c4;
+
+        &:focus {
+            border: 1px solid #1871ca;
+        }
+    }
+}

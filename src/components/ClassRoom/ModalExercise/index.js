@@ -28,8 +28,10 @@ import linkIcon from '~/assets/icon/link.png';
 import googleDriveIcon from '~/assets/icon/google-drive.png';
 import youtubeIcon from '~/assets/icon/youtube.png';
 import wordIcon from '~/assets/icon/word.png';
-
-
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import AvatarCircle from '~/components/Global/AvatarCircle';
+import Exercise from '../Exercise';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -62,36 +64,96 @@ function getStyles(name, personName, theme) {
     };
 }
 
-// ant design ui
-const props = {
-    name: 'file',
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-    headers: {
-        authorization: 'authorization-text',
-    },
-    onChange(info) {
-        if (info.file.status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully`);
-        } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-        }
-    },
-};
 const cx = classNames.bind(styles);
 
-function ModalExercise() {
+function ModalExercise({ setExercise }) {
     const theme = useTheme();
+    const auth = useSelector((state) => state.auth);
     const [isTimeOut, setIsTimeOut] = useState(true);
     const [isEdit, setIsEdit] = useState(true);
     const [startDate, setStartDate] = useState(new Date());
     const [personName, setPersonName] = useState([]);
+    const [students, setStudents] = useState([]);
+    const [selectStudents, setSelectStudents] = useState([]);
 
-    const onChangeSwitch = (checked) => {
-        setIsTimeOut(checked);
+    // set input data
+    const [title, setTitle] = useState(null);
+    const [content, setContent] = useState(null);
+    const [score, setScore] = useState(100);
+    const [files, setFile] = useState([]);
+
+    // ant design ui
+    const props = {
+        name: 'file',
+        action: 'http://localhost:3000/upload',
+        headers: {
+            authorization: 'authorization-text',
+        },
+        onChange(info) {
+            if (info.file.status !== 'uploading') {
+                // console.log(info.file, info.fileList);
+            }
+            if (info.file.status === 'done') {
+                setFile(info.fileList);
+                message.success(`${info.file.name} file uploaded successfully`);
+            } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} file upload failed.`);
+            }
+        },
+        beforeUpload: async (file) => {
+            console.log(file);
+        },
     };
+
+    useEffect(() => {
+        const ID_CLASS = window.location.href.split('/').reverse()[0];
+        const exc = {
+            id_class: ID_CLASS,
+            author: {
+                name: auth.name,
+                email: auth.email,
+                avatar: auth.avatar,
+            },
+            title: title,
+            content: content,
+            students: personName.includes('all') ? students : selectStudents,
+            deadline: startDate,
+            late: isTimeOut,
+            score: score,
+            edit: isEdit,
+            files: files,
+        };
+        setExercise(exc);
+    }, [
+        auth.avatar,
+        auth.email,
+        auth.name,
+        content,
+        files,
+        isEdit,
+        isTimeOut,
+        personName,
+        score,
+        selectStudents,
+        setExercise,
+        startDate,
+        students,
+        title,
+    ]);
+
+
+    useEffect(() => {
+        const newList = students.filter((student) => {
+            if (personName.includes(student.email)) {
+                return student;
+            }
+        });
+        setSelectStudents(newList);
+    }, [personName, students]);
+
+    function onChangeSwitch(checked) {
+        setIsTimeOut(checked);
+    }
 
     const onChangeEdit = (checked) => {
         setIsEdit(checked);
@@ -106,6 +168,14 @@ function ModalExercise() {
             typeof value === 'string' ? value.split(',') : value,
         );
     };
+
+    useEffect(() => {
+        const ID_CLASS = window.location.href.split('/').reverse()[0];
+        axios
+            .get(`http://localhost:3000/api/class/member/${ID_CLASS}`)
+            .then((res) => setStudents(res.data.member))
+            .catch((err) => console.log(err));
+    }, []);
 
     return (
         <div className={cx('wrap')}>
@@ -128,6 +198,7 @@ function ModalExercise() {
                                 id="filled-basic"
                                 label="Câu hỏi  "
                                 variant="filled"
+                                onChange={(e) => setTitle(e.target.value)}
                             />
                             <TextField
                                 id="filled-multiline-static"
@@ -137,6 +208,7 @@ function ModalExercise() {
                                 multiline
                                 rows={4}
                                 variant="filled"
+                                onChange={(e) => setContent(e.target.value)}
                             />
                         </Box>
                         <div className={cx('upload')}>
@@ -147,23 +219,23 @@ function ModalExercise() {
                         <div className={cx('list-icon')}>
                             <div className={cx('icon-item')}>
                                 <img src={pdfIcon} alt="pdf" />
-                                <h2 className='mt-2'>PDF</h2>
+                                <h2 className="mt-2">PDF</h2>
                             </div>
                             <div className={cx('icon-item')}>
                                 <img src={wordIcon} alt="pdf" />
-                                <h2 className='mt-2'>Word</h2>
+                                <h2 className="mt-2">Word</h2>
                             </div>
                             <div className={cx('icon-item')}>
                                 <img src={linkIcon} alt="pdf" />
-                                <h2 className='mt-2'>Link</h2>
+                                <h2 className="mt-2">Link</h2>
                             </div>
                             <div className={cx('icon-item')}>
                                 <img src={youtubeIcon} alt="pdf" />
-                                <h2 className='mt-2'>Youtube</h2>
+                                <h2 className="mt-2">Youtube</h2>
                             </div>
                             <div className={cx('icon-item')}>
                                 <img src={googleDriveIcon} alt="pdf" />
-                                <h2 className='mt-2'>Drive</h2>
+                                <h2 className="mt-2">Drive</h2>
                             </div>
                         </div>
                     </div>
@@ -193,14 +265,22 @@ function ModalExercise() {
                                         )}
                                         MenuProps={MenuProps}
                                     >
-                                        {names.map((name) => (
+                                        <MenuItem
+                                            sx={{ fontSize: 16 }}
+                                            key={1}
+                                            value="all"
+                                            style={getStyles('all', personName, theme)}
+                                        >
+                                            Tất cả
+                                        </MenuItem>
+                                        {students.map((student) => (
                                             <MenuItem
                                                 sx={{ fontSize: 16 }}
-                                                key={name}
-                                                value={name}
-                                                style={getStyles(name, personName, theme)}
+                                                key={student.email}
+                                                value={student.email}
+                                                style={getStyles(student.email, personName, theme)}
                                             >
-                                                {name}
+                                                <AvatarCircle size="20px" avatar={student.avatar} /> {student.email}
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -248,6 +328,7 @@ function ModalExercise() {
                                                 defaultValue="100"
                                                 InputProps={{ style: { fontSize: 16 } }}
                                                 InputLabelProps={{ style: { fontSize: 16 } }}
+                                                onChange={(e) => setScore(e.target.value)}
                                             />
                                         </div>
                                     </div>

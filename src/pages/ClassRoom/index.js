@@ -18,7 +18,7 @@ import MenuTool from '~/components/ClassRoom/MenuTool';
 import ModalExercise from '~/components/ClassRoom/ModalExercise';
 import { Modal as ModalAnt, message } from 'antd';
 import Exercise from '~/components/ClassRoom/ExercisePage';
-
+import ModalCalender from '~/components/ClassRoom/ModalCalendar';
 const { TextArea } = Input;
 
 const cx = classNames.bind(styles);
@@ -36,10 +36,18 @@ function ClassRoom() {
     const titleRef = useRef(null);
     const contentRef = useRef(null);
     const [isModalExcer, setIsModalExcer] = useState(false);
+    const [isModalCalender, setIsModalCalender] = useState(false);
+    const [exercise, setExercise] = useState(null);
+    const [calender, setCalender] = useState(null);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const handleModalExcer = () => setIsModalExcer(true);
+    const handleModalcalender = () => setIsModalCalender(true);
+
+    useEffect(() => {
+        console.log(exercise);
+    }, [exercise]);
 
     useEffect(() => {
         setID_CLASS(window.location.href.split('/').reverse()[0]);
@@ -47,7 +55,9 @@ function ClassRoom() {
             axios
                 .get(`http://localhost:3000/api/class/${ID_CLASS}`)
                 .then((res) => {
-                    setCourse(res.data);
+                    setTimeout(() => {
+                        setCourse(res.data);
+                    }, 500);
                 })
                 .catch((err) => console.log(err));
         } catch (err) {
@@ -100,7 +110,47 @@ function ClassRoom() {
         }
     };
 
-    return (
+    const onSubmitCreateExercise = () => {
+        setIsModalExcer(true);
+        console.log(exercise);
+        axios
+            .post('http://localhost:3000/api/classroom/exercise', exercise)
+            .then((res) => {
+                setIsModalExcer(false);
+                setTimeout(() => {
+                    message.success(`Đã tạo bài tập.`);
+                }, 500);
+            })
+            .catch((err) => {
+                setTimeout(() => {
+                    message.error(`Tạo bài tập thất bại.`);
+                }, 500);
+            });
+    };
+
+    const onSubmitCreateCalender = () => {
+        console.log(calender);
+        axios
+            .post(`http://localhost:3000/api/classroom/calender/${ID_CLASS}`, calender)
+            .then((res) => {
+                setIsModalCalender(false);
+                setTimeout(() => {
+                    message.success(`Đã tạo Lịch.`);
+                }, 500);
+            })
+            .catch((err) => {
+                setTimeout(() => {
+                    message.error(`Tạo Lịch thất bại.`);
+                }, 500);
+            });
+    };
+
+    const checkAuthor = () => {
+        if (course.author.email === auth.email) return true;
+        return false;
+    };
+
+    return course ? (
         <div className={cx('wrap')}>
             <div className={cx('header')}>
                 <div className={cx('heading')}>
@@ -109,9 +159,15 @@ function ClassRoom() {
                 <div className={cx('box')}>
                     {(selectFrame === 'news' && <h1>Các thông báo lớp học</h1>) ||
                         (selectFrame === 'calendar' && <h1>Lịch học</h1>) ||
-                        (selectFrame === 'member' && <h1>Mọi người</h1>) || 
+                        (selectFrame === 'member' && <h1>Mọi người</h1>) ||
                         (selectFrame === 'exercise' && <h1>Bài tập</h1>)}
-                    <MenuTool onClickNoti={handleOpen} onClickExcer={handleModalExcer} />
+                    {checkAuthor() && (
+                        <MenuTool
+                            onClickNoti={handleOpen}
+                            onClickExcer={handleModalExcer}
+                            onClickCalender={handleModalcalender}
+                        />
+                    )}
                 </div>
             </div>
             <div className="grid grid-cols-12 gap-4">
@@ -175,13 +231,27 @@ function ClassRoom() {
                 centered
                 title="Thêm bài tập"
                 open={isModalExcer}
-                onOk={() => setIsModalExcer(true)}
+                onOk={() => onSubmitCreateExercise()}
                 onCancel={() => setIsModalExcer(false)}
                 okType="danger"
-                
             >
-                <ModalExercise />
+                <ModalExercise setExercise={setExercise} />
             </ModalAnt>
+            <ModalAnt
+                width={600}
+                centered
+                title="Tạo lịch học"
+                open={isModalCalender}
+                onOk={() => onSubmitCreateCalender()}
+                onCancel={() => setIsModalCalender(false)}
+                okType="danger"
+            >
+                <ModalCalender setCalender={setCalender} />
+            </ModalAnt>
+        </div>
+    ) : (
+        <div className='flex justify-center items-center' style={{height: '600px'}}> 
+            <CircularProgress />
         </div>
     );
 }

@@ -107,7 +107,6 @@ function PostItem({ post, refresh, reset }) {
             console.log(err);
         }
     };
-
     return (
         post && (
             <div className={cx('wrap')}>

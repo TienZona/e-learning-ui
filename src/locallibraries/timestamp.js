@@ -5,11 +5,25 @@ export const getTime = (day) => {
     return (hours < 10 ? '0' + hours : hours) + ':' + (minutes < 10 ? '0' + minutes : minutes);
 };
 
+export const formatTime = (day) => {
+    const date = new Date(day);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return (hours) + ':' + (minutes < 10 ? '0' + minutes : minutes);
+}
+
+export const formatDateNotYear = (day) => {
+    const date = new Date(day);
+    // 1 thg 3
+    return date.getDate() + ' thg ' + (date.getMonth() + 1);
+}
+
 export const getFormatDate = (day) => {
     const date = new Date(day);
     // 1 thg 3, 2023
     return date.getDate() + ' thg ' + (date.getMonth() + 1) + ', ' + date.getFullYear();
 };
+
 
 export const getFormatday = (day) => {
     const date = new Date(day);

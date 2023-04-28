@@ -1,0 +1,21 @@
+.wrap {
+    margin: 20px 100px;
+
+    .title-3 {
+        font-size: 14px;
+    }
+
+    .chat-list {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .chat-item {
+        height: max-content;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 20px;
+        border: 1px solid #fff;
+    }
+}

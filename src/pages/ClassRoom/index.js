@@ -19,6 +19,8 @@ import ModalExercise from '~/components/ClassRoom/ModalExercise';
 import { Modal as ModalAnt, message } from 'antd';
 import Exercise from '~/components/ClassRoom/ExercisePage';
 import ModalCalender from '~/components/ClassRoom/ModalCalendar';
+import HistoryPage from '~/components/ClassRoom/HistoryPage';
+
 const { TextArea } = Input;
 
 const cx = classNames.bind(styles);
@@ -160,7 +162,8 @@ function ClassRoom() {
                     {(selectFrame === 'news' && <h1>Các thông báo lớp học</h1>) ||
                         (selectFrame === 'calendar' && <h1>Lịch học</h1>) ||
                         (selectFrame === 'member' && <h1>Mọi người</h1>) ||
-                        (selectFrame === 'exercise' && <h1>Bài tập</h1>)}
+                        (selectFrame === 'exercise' && <h1>Bài tập</h1>) ||
+                        (selectFrame === 'history' && <h1>Lịch sử buổi học</h1>)}
                     {checkAuthor() && (
                         <MenuTool
                             onClickNoti={handleOpen}
@@ -179,7 +182,8 @@ function ClassRoom() {
                         {(selectFrame === 'news' && <Posts reset={reset} classID={ID_CLASS} />) ||
                             (selectFrame === 'calendar' && <Calendar />) ||
                             (selectFrame === 'member' && <Member />) ||
-                            (selectFrame === 'exercise' && <Exercise />)}
+                            (selectFrame === 'exercise' && <Exercise course={course}/>) ||
+                            (selectFrame === 'history' && <HistoryPage />)}
                     </div>
                     <h1>hello</h1>
                 </div>
@@ -250,7 +254,7 @@ function ClassRoom() {
             </ModalAnt>
         </div>
     ) : (
-        <div className='flex justify-center items-center' style={{height: '600px'}}> 
+        <div className="flex justify-center items-center" style={{ height: '600px' }}>
             <CircularProgress />
         </div>
     );

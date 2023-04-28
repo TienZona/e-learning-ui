@@ -5,6 +5,14 @@ export const addUser = (user) => {
     }
 }
 
+export const removeUser = (user) => {
+    return {
+
+        type: 'REMOVE_USER',
+        payload: user
+    }
+}
+
 export const addListUser = (users) => {
     return {
         type: 'LIST_USER',

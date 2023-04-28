@@ -12,16 +12,21 @@ const fetchDataCall = async () => {
     return apiResult;
 };
 
-function NewClass() {
+function NewClass({ courses }) {
     const [listCourse, setListCourse] = useState([]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            let data = await fetchDataCall();
-            setListCourse((prev) => [...prev, ...data]);
-        };
-        fetchData();
-    }, []);
+        if (!courses) {
+            const fetchData = async () => {
+                let data = await fetchDataCall();
+                setListCourse((prev) => [...prev, ...data]);
+            };
+            fetchData();
+        } else {
+            setListCourse(courses);
+        }
+        console.log(courses);
+    }, [courses]);
 
     return (
         <>

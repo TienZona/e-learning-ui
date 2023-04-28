@@ -1,0 +1,13 @@
+.wrap {
+    color: #fff;
+
+    .datetime {
+        width: max-content;
+        .icon-btn {
+            margin: 0 12px;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}

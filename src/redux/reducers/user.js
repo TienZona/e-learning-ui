@@ -14,7 +14,18 @@ const userReducer = (state = initialState, action) => {
             };
         }
 
+        case 'REMOVE_USER': {
+            const newList = [...state.list];
+            return {
+                ...state,
+                list: newList.filter((item) => item.socketID !== action.payload),
+            };
+        }
+
         case 'LIST_USER': {
+            const newList = [...state.list];
+            console.log(action.payload)
+
             return {
                 ...state,
                 list: action.payload,
@@ -62,11 +73,11 @@ const userReducer = (state = initialState, action) => {
             };
         }
 
-        case 'REMOVE_LIST' : {
+        case 'REMOVE_LIST': {
             return {
                 ...state,
-                list: []
-            }
+                list: [],
+            };
         }
 
         default:

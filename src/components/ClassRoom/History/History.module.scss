@@ -1,0 +1,14 @@
+.infor {
+    display: flex;
+    justify-content: center ;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .icon {
+        font-size: 20;
+        &:hover {
+            cursor: pointer;
+            opacity: 0.9;
+        }
+    }
+}

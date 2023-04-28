@@ -8,6 +8,6 @@ const rootReducer = combineReducers({
     user: userReducer,
     userName: userNameReducer,
     chat: chatReducer,
-    auth: authReducer
+    auth: authReducer,
 });
 export default rootReducer;

@@ -4,9 +4,17 @@ export const addChat = (data) => {
         payload: {
             room: data.room,
             avatar: data.avatar,
-            author: data.author,
+            name: data.name,
+            email: data.email,
             message: data.message,
             time: data.time
         }
+    }
+}
+
+export const removeChat = (data) => {
+    return {
+        type: 'REMOVE_CHAT',
+        payload: null
     }
 }

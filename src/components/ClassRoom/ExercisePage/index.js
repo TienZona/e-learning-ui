@@ -21,7 +21,7 @@ import SubmitExc from '../SubmitExcPage';
 
 const cx = classNames.bind(styles);
 
-function ExercisePage() {
+function ExercisePage({ course }) {
     const auth = useSelector((state) => state.auth);
     const colors = ['#467fd0', '#42ba96', '#ffc107', '#df4759'];
     const [isTimeLine, setIsTimeLine] = useState(true);
@@ -31,8 +31,12 @@ function ExercisePage() {
 
     useEffect(() => {
         const ID_CLASS = window.location.href.split('/').reverse()[0];
+        const url =
+            auth.email !== course.author.email
+                ? `http://localhost:3000/api/classroom/student/exercise`
+                : `http://localhost:3000/api/classroom/exercise/${course.id}`;
         axios
-            .get(`http://localhost:3000/api/classroom/student/exercise`, {
+            .get(url, {
                 params: { email: auth.email, id: ID_CLASS },
             })
             .then((res) => {
@@ -109,11 +113,9 @@ function ExercisePage() {
     };
 
     const checkAuthor = () => {
-        if(exercise.author.email === auth.email) return true;
+        if (exercise.author.email === auth.email) return true;
         return false;
-    }
-
-
+    };
 
     return (
         <div className={cx('wrap')}>
@@ -133,34 +135,58 @@ function ExercisePage() {
             {!page &&
                 (exercises.length > 0 ? (
                     <VerticalTimeline>
-                        {exercises.map((exercise, index) => (
-                            <VerticalTimelineElement
-                                key={index}
-                                className="vertical-timeline-element--work"
-                                contentStyle={{ background: colors[checkLate(exercise)], color: '#fff' }}
-                                contentArrowStyle={{ borderRight: `7px solid  ${colors[checkLate(exercise)]}` }}
-                                date={handleDateTime(exercise)}
-                                iconStyle={{ background: '#fff', color: '#fff' }}
-                                icon={<Icon icon={AssignmentIcon} />}
-                            >
-                                <div
-                                    onClick={() => {
-                                        setPage(1);
-                                        setExercise(exercise);
-                                    }}
+                        {auth.email === course.author.email ? (
+                            exercises.map((exercise, index) => (
+                                <VerticalTimelineElement
+                                    key={index}
+                                    className="vertical-timeline-element--work"
+                                    contentStyle={{ background: colors[1], color: '#fff' }}
+                                    contentArrowStyle={{ borderRight: `7px solid  ${colors[1]}` }}
+                                    date={handleDateTime(exercise)}
+                                    iconStyle={{ background: '#fff', color: '#fff' }}
+                                    icon={<Icon icon={AssignmentIcon} />}
                                 >
-                                    <h3 className="vertical-timeline-element-title">{exercise.title}</h3>
-                                    <p>{exercise.content}</p>
-                                </div>
-                            </VerticalTimelineElement>
-                        ))}
+                                    <div
+                                        onClick={() => {
+                                            setPage(1);
+                                            setExercise(exercise);
+                                        }}
+                                    >
+                                        <h3 className="vertical-timeline-element-title">{exercise.title}</h3>
+                                        <p>{exercise.content}</p>
+                                    </div>
+                                </VerticalTimelineElement>
+                            ))
+                        ) : (
+                            exercises.map((exercise, index) => (
+                                <VerticalTimelineElement
+                                    key={index}
+                                    className="vertical-timeline-element--work"
+                                    contentStyle={{ background: colors[checkLate(exercise)], color: '#fff' }}
+                                    contentArrowStyle={{ borderRight: `7px solid  ${colors[checkLate(exercise)]}` }}
+                                    date={handleDateTime(exercise)}
+                                    iconStyle={{ background: '#fff', color: '#fff' }}
+                                    icon={<Icon icon={AssignmentIcon} />}
+                                >
+                                    <div
+                                        onClick={() => {
+                                            setPage(1);
+                                            setExercise(exercise);
+                                        }}
+                                    >
+                                        <h3 className="vertical-timeline-element-title">{exercise.title}</h3>
+                                        <p>{exercise.content}</p>
+                                    </div>
+                                </VerticalTimelineElement>
+                            ))
+                        )}
                     </VerticalTimeline>
                 ) : (
                     <h1>Chưa có bài tập nào</h1>
                 ))}
             {page === 1 && <Exercise exercise={exercise} setIsTimeLine={setIsTimeLine} />}
 
-            {page === 2  && <SubmitExc exercise={exercise} />}
+            {page === 2 && <SubmitExc exercise={exercise} />}
         </div>
     );
 }

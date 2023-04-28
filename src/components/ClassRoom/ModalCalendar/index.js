@@ -1,6 +1,6 @@
 import styles from './ModalCalender.module.scss';
 import classNames from 'classnames/bind';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -11,6 +11,8 @@ function ModalCalender({setCalender}) {
     const [title, setTitle] = useState(null);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+
+    const titleRef = useRef(null);
 
 
     useEffect(() => {
@@ -24,6 +26,7 @@ function ModalCalender({setCalender}) {
         setCalender(calender)
     }, [endDate, setCalender, startDate, title])
 
+
     return (
         <div className={cx('wrap')}>
             <div className="my-6">
@@ -34,6 +37,8 @@ function ModalCalender({setCalender}) {
                     id="filled-basic"
                     label="Tiêu đề  "
                     variant="filled"
+                    ref={titleRef}
+                    value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     fullWidth
                 />

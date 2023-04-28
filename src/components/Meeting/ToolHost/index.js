@@ -13,7 +13,7 @@ import RandomModal from '../RandomModal';
 
 const cx = classNames.bind(styles);
 
-function ToolHost() {
+function ToolHost({socket, setSurvey, setQuestion}) {
     const [openSurvey, setOpenSurvey] = useState(false);
     const [openExam, setOpenExam] = useState(false);
     const [openRandom, setOpenRandom] = useState(false);
@@ -59,8 +59,8 @@ function ToolHost() {
                     </div>
                 </div>
             </div>
-            <SurveyModal onCloseModal={handleCloseSurveyModal} openSurvey={openSurvey}/>
-            <ExamModal onCloseModal={handleCloseExamModal} openExam={openExam}/>
+            <SurveyModal setSurvey={setSurvey} socket={socket} onCloseModal={handleCloseSurveyModal} openSurvey={openSurvey}/>
+            <ExamModal setQuestion={setQuestion} socket={socket} onCloseModal={handleCloseExamModal} openExam={openExam}/>
             <RandomModal onCloseModal={handleCloseRandomModal} openRandom={openRandom}/>
 
         </div>

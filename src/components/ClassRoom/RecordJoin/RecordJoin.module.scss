@@ -1,0 +1,33 @@
+.title-2 {
+    font-size: 18px;
+    color: #fff;
+    width: max-content;
+    padding: 4px 10px;
+    border-left: 1px solid #3ceaea;
+    border-bottom: 1px solid #3ceaea;
+}
+
+.list {
+    margin: 20px 100px;
+
+    .item {
+        width: 100%;
+        height: max-content;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #333;
+        box-shadow: 0 2px 2px rgba($color: #fff, $alpha: 0.1);
+        p {
+            font-size: 14px;
+            color: #ccc;
+        }
+    }
+
+    .list-join {
+        border-left: 1px solid #ccc;
+    }
+
+    .item-join {
+        padding: 0px 10px;
+    }
+}

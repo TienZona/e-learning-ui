@@ -13,42 +13,43 @@ const cx = classNames.bind(styles);
 
 function ChatBox({ socket, username, room }) {
     // redux
+    const auth = useSelector((state) => state.auth);
     const users = useSelector((state) => state.user.list);
     const listMessage = useSelector((state) => state.chat.list);
     const [currentMessage, setCurrentMessage] = useState('');
     const dispatch = useDispatch();
-
     // hook
     const [theme, setTheme] = useState(true);
     const messagesEndRef = useRef(null);
-    const [timer, setTimer] = useState(new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes('00'))
-
+    const [timer, setTimer] = useState(new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes('00'));
     const sendMessage = async () => {
         if (currentMessage !== '') {
             const messageData = {
                 room: room,
-                avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU',
-                author: username ? username : 'TienZona',
+                avatar: auth.avatar,
+                name: auth.name,
+                email: auth.email,
                 message: currentMessage,
                 time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes(),
             };
             await socket.emit('send_message', messageData);
-            dispatch(addChat(messageData));
             setCurrentMessage('');
         }
     };
 
     useEffect(() => {
-        const interval = setInterval(() => setTimer(new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes()), 10000);
+        const interval = setInterval(
+            () => setTimer(new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes()),
+            10000,
+        );
         return () => {
-          clearInterval(interval);
+            clearInterval(interval);
         };
-      }, []);
+    }, []);
 
     useEffect(() => {
-        socket.on('receive_message', (users, data) => {
+        socket.on('receive_message', (data) => {
             dispatch(addChat(data));
-            console.log(users)
         });
     }, [socket]);
 
@@ -87,8 +88,8 @@ function ChatBox({ socket, username, room }) {
                         <ItemChat
                             key={index}
                             avatar={item.avatar}
+                            name={item.name}
                             time={item.time}
-                            auther={item.author}
                             content={item.message}
                         />
                     ))}

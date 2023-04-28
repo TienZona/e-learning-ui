@@ -2,25 +2,40 @@ import classNames from 'classnames/bind';
 import styles from './Meet.module.scss';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import uuid from 'react-uuid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
 function Meet() {
     const auth = useSelector((state) => state.auth);
     const [inputValue, setInputValue] = useState('');
+    const navigate = useNavigate();
 
     const getDayName = (dayIndex) => {
         let daysArray = ['Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy', 'Chủ nhật'];
         return daysArray[dayIndex - 1];
     };
 
-    const handleNavigator = () => {
-        window.location.href = `/meeting/${inputValue}`;
+    const createMeet = () => {
+        axios
+            .post(`http://localhost:3000/meet`, {
+                author: auth,
+                id_room: null,
+                members: [
+                ],
+                messages: [],
+            })
+            .then((res) => {
+                if(res.status === 200){
+                    navigate(`/meeting/${res.data.id_room}`);
+                }
+            })
+            .catch((err) => console.log(err));
     };
 
     return (
@@ -49,12 +64,10 @@ function Meet() {
                     </div>
                     <div className={cx('slide-3')}>
                         <h3> Hi! {auth.name}</h3>
-                        <Link to={'/meeting/' + uuid()} relative="path">
-                            <button className={cx('button')}>
-                                <FontAwesomeIcon icon={faVideo} className={cx('icon')} />
-                                Tạo cuộc họp
-                            </button>
-                        </Link>
+                        <button className={cx('button')} onClick={() => createMeet()}>
+                            <FontAwesomeIcon icon={faVideo} className={cx('icon')} />
+                            Tạo cuộc họp
+                        </button>
 
                         <div className={cx('input-name')}>
                             <input

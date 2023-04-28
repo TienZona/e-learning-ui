@@ -3,11 +3,23 @@
     height: 100%;
 }
 
+.close-meeting {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+}
+
 .mid-content {
     height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+
+.progress {
+    position: fixed;
+    inset: 50%;
 }
 
 .footer {

@@ -1,8 +1,12 @@
 import classNames from 'classnames/bind';
 import styles from './SurveyItem.module.scss';
-import Button from '@mui/material/Button';
 import { CChart } from '@coreui/react-chartjs';
 import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+
+// material ui
+import Button from '@mui/material/Button';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Modal from '@mui/material/Modal';
@@ -14,14 +18,16 @@ const cx = classNames.bind(styles);
 
 const ariaLabel = { 'aria-label': 'description' };
 
-function SurveyItem({ survey, second }) {
-    const listAnswer = useRef(null);
+function SurveyItem({ survey, second, socket }) {
+    const listAnswerMember = useRef(null);
+    const [isVote, setIsVote] = useState(false);
+    const auth = useSelector((state) => state.auth);
     const [openChart, setOpenChart] = useState(false);
     const [openModal, setOpenModal] = useState(false);
-    const [inputValue, setInputValue] = useState(null)
+    const [inputValue, setInputValue] = useState(null);
 
     const voteNumber = survey.answers.map((item) => {
-        return item.vote;
+        return item.vote.length;
     });
 
     const voteContent = survey.answers.map((item) => {
@@ -29,12 +35,27 @@ function SurveyItem({ survey, second }) {
     });
 
     const handleSubmit = () => {
+        axios
+            .post(`http://localhost:3000/meet/survey/create_ans`, {
+                _id: survey._id,
+                content: inputValue,
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    socket.emit('new-answer', survey._id);
+                    survey.answers.push({
+                        content: inputValue,
+                        vote: [],
+                    });
+                }
+            });
         setOpenModal(false);
     };
 
     useEffect(() => {
-        listAnswer.current = survey.answers.sort((a, b) => b.vote - a.vote);
-    }, [survey]);
+        listAnswerMember.current = survey.answers.sort((a, b) => b.vote - a.vote);
+        console.log(listAnswerMember);
+    }, [survey.answers, socket]);
 
     const renderMinute = (second) => {
         const result = Math.floor(second / 60);
@@ -44,6 +65,25 @@ function SurveyItem({ survey, second }) {
     const renderSecond = (second) => {
         const result = Math.floor(second % 60);
         return result < 10 ? '0' + result : result;
+    };
+
+    const submitVote = (item) => {
+        const newAnswers = survey.answers.map((ans) => {
+            if (ans.content === item.content) {
+                ans.vote.push({
+                    name: auth.name,
+                    email: auth.email,
+                    avatar: auth.avatar,
+                    voted_at: Date.now()
+                });
+            }
+            return ans;
+        });
+        const data = {
+            _id: survey._id,
+            answers: newAnswers,
+        };
+        socket.emit('vote', data);
     };
 
     return (
@@ -59,27 +99,32 @@ function SurveyItem({ survey, second }) {
             {!openChart ? (
                 <>
                     <div className={cx('list')}>
-                        {listAnswer.current ? (
-                            listAnswer.current.map((item, index) => (
+                        {survey.answers ? (
+                            survey.answers.map((item, index) => (
                                 <div key={index} className={cx('item')}>
-                                    <span className={cx('quantity')}>{item.vote}</span>
+                                    <span className={cx('quantity')}>{item.vote.length}</span>
                                     <p className={cx('content')}>{item.content}</p>
                                     <div className={cx('voting')}>
                                         <div className={cx('avatar-group')}>
                                             <AvatarGroup max={4}>
-                                                <Avatar
-                                                    alt="Remy Sharp"
-                                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFLvVixHKSuVD47xKe9TA83JzjoAUQOwcmGv_ylgOXfGfPFeXwwTDb2O_joF5vBybgYUk&usqp=CAU"
-                                                />
-                                                <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                                                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                                                <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-                                                <Avatar alt="Trevor Henderson" src="/static/images/avatar/5.jpg" />
+                                                {item.vote.map((user, index) => (
+                                                    <Avatar key={index} alt={user.name} src={user.avatar} />
+                                                ))}
                                             </AvatarGroup>
                                         </div>
-                                        <Button variant="" color="secondary" className={cx('voting-btn')}>
-                                            VOTE
-                                        </Button>
+                                        {!isVote && (
+                                            <Button
+                                                variant=""
+                                                color="secondary"
+                                                className={cx('voting-btn')}
+                                                onClick={() => {
+                                                    submitVote(item);
+                                                    setIsVote(true);
+                                                }}
+                                            >
+                                                VOTE
+                                            </Button>
+                                        )}
                                     </div>
                                 </div>
                             ))
@@ -87,13 +132,15 @@ function SurveyItem({ survey, second }) {
                             <h3>Chưa có câu trẳ lời nào</h3>
                         )}
                     </div>
-                    <Button
-                        variant="contained"
-                        onClick={() => setOpenModal(true)}
-                        sx={{ fontSize: '14px', backgroundColor: 'green' }}
-                    >
-                        Thêm câu trả lời
-                    </Button>
+                    {survey.create_answer && (
+                        <Button
+                            variant="contained"
+                            onClick={() => setOpenModal(true)}
+                            sx={{ fontSize: '14px', backgroundColor: 'green' }}
+                        >
+                            Thêm câu trả lời
+                        </Button>
+                    )}
                 </>
             ) : (
                 <div className={cx('chart')}>
@@ -174,7 +221,7 @@ function SurveyItem({ survey, second }) {
                         inputProps={ariaLabel}
                         onChange={(e) => setInputValue(e.target.value)}
                     />
-                    <Button variant="contained" onClick={handleSubmit} sx={{ fontSize: '14px' }}>
+                    <Button variant="contained" onClick={() => handleSubmit()} sx={{ fontSize: '14px' }}>
                         THÊM
                     </Button>
                 </div>

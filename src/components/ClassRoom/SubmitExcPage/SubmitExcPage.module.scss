@@ -20,8 +20,9 @@
 
     .info {
         width: 50%;
-        display: flex;
-        justify-content: space-between;
+        color: #fff;
+        // display: flex;
+        // justify-content: space-between;
         // align-items: center;
 
         .user {
@@ -38,7 +39,29 @@
         }
 
         .other {
+            margin-left: 20px;
             color: #fff;
+        }
+
+        .score {
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .btn-score {
+            width: 60px;
+            height: 30px;
+            margin-left: 15px;
+            border-radius: 4px;
+            background-color: #1675fa;
+            transition: all ease .1s;
+            &:hover {
+                cursor: pointer;
+                opacity: .8;
+            }
+        
         }
     }
 

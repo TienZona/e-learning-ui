@@ -36,6 +36,7 @@ function Course({ course }) {
 
     const checkJoinedCourse = () => {
         var result = false;
+        if (course.author.email === auth.email) return true;
         course.member.forEach((member) => {
             if (member.email === auth.email) {
                 result = true;

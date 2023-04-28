@@ -11,6 +11,7 @@ import Test from '~/pages/Test';
 import ClassRoom from '~/pages/ClassRoom';
 import Class from '~/pages/Class';
 import CreateClass from '~/components/ClassRoom/CreateClass';
+import EndMeeting from '~/pages/EndMeeting';
 
 const publicRoutes = [
     {
@@ -55,6 +56,10 @@ const publicRoutes = [
         path: '/classroom/edit/:id',
         component: CreateClass,
         layout: ClassLayout
+    },
+    {
+        path: '/meeting/end',
+        component: EndMeeting
     }
 ];
 

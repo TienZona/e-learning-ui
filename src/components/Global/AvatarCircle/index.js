@@ -7,7 +7,7 @@ function AvatarCircle(props) {
     const noneAvatar =
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT43Q1CTrvRfckF6osuwyT4-TOYrBRWTYSUCc-plMWXrIkbARNsWnCAA67TQE7he2qEJ1Y&usqp=CAU';
     const size = props.size ? props.size : "30px";
-    const border = props.border ? props.border : "#ccc";
+    const border = props.border ? props.border : "none";
     return (
         <img
             className={cx('img')}

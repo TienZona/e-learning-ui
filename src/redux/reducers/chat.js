@@ -13,6 +13,12 @@ const chatReducer = (state = initialState, action) => {
                 list: newList,
             };
         }
+        case 'REMOVE_CHAT': {
+            return {
+                ...state,
+                list: []
+            }
+        }
         default:
             return state;
     }

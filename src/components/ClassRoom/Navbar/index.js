@@ -1,13 +1,12 @@
 import classNames from 'classnames/bind';
 import styles from './Navbar.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faCalendar, faBrain, faUsersBetweenLines } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faCalendar, faBrain, faUsersBetweenLines, faClockRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
-function Navbar({active, setActive}) {
-
+function Navbar({ active, setActive }) {
     return (
         <div className={cx('wrap')}>
             <div className={cx('list')}>
@@ -29,6 +28,11 @@ function Navbar({active, setActive}) {
                 <div className={cx('item', active === 'member' && 'active')} onClick={() => setActive('member')}>
                     <FontAwesomeIcon className={cx('icon')} icon={faUsersBetweenLines} />
                     <h3>Thành viên</h3>
+                    <span></span>
+                </div>
+                <div className={cx('item', active === 'history' && 'active')} onClick={() => setActive('history')}>
+                    <FontAwesomeIcon className={cx('icon')} icon={faClockRotateLeft} />
+                    <h3>Lịch sử</h3>
                     <span></span>
                 </div>
             </div>

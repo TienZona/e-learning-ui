@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './HistoryItem.module.scss';
 import classNames from 'classnames/bind';
 import RecordJoin from '../RecordJoin';
@@ -18,7 +18,6 @@ const cx = classNames.bind(styles);
 function HistoryItem({ setPage, meet }) {
     const [active, setActive] = useState('item1');
     const [isProgress, setIsProgress] = useState(false);
-    const [start, setStart] = useState(null);
     const [course, setCourse] = useState(null);
 
     useEffect(() => {
@@ -36,7 +35,6 @@ function HistoryItem({ setPage, meet }) {
             })
             .catch((err) => console.log(err));
     }, [meet]);
-
     return (
         <div className={cx('wrap')}>
             <div className={cx('btn-back')} onClick={() => setPage(true)}>

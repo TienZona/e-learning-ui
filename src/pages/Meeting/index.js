@@ -15,23 +15,61 @@ import ToolBar from '~/components/Meeting/ToolBar';
 import SliderUser from '~/components/Meeting/SliderUser';
 import ChatBox from '~/components/Meeting/ChatBox';
 import UserItem from '~/components/Meeting/UserItem';
-import { addListUser, addUser, setStream, removeList, setAudio, deleteStream, removeUser } from '~/redux/actions/user';
-import { removeChat } from '~/redux/actions/chat';
 import ToolHost from '~/components/Meeting/ToolHost';
 import FeatureBox from '~/components/Meeting/FeatureBox';
+
+import {
+    addListUser,
+    addUser,
+    setStream,
+    removeList,
+    setAudio,
+    deleteStream,
+    removeUser,
+    setCamera,
+    deleteCamera,
+} from '~/redux/actions/user';
+import { removeChat } from '~/redux/actions/chat';
 import io from 'socket.io-client';
 import axios from 'axios';
 import { Button, Modal } from 'antd';
 
+import handHello from '~/assets/icon/hello.png';
+import audioJoin from '~/assets/audio/join-room.mp3';
+import audiHandUp from '~/assets/audio/ting.mp3';
+
 const host = 'http://localhost:3000';
 const cx = classNames.bind(styles);
 function Meeting() {
+    document.title = 'Cuộc họp diễn ra';
     const navigate = useNavigate();
+    const audioJoinRef = useRef(null);
+    const audioHandRef = useRef(null);
+    const [userHandsUp, setUserHandsUp] = useState(null);
     const [roomMeet, setRoomMeet] = useState(null);
     const socket = useRef(io.connect(host));
     const [survey, setSurvey] = useState(null);
     const [question, setQuestion] = useState(null);
     const [isModalCloseOpen, setIsModalCloseOpen] = useState(false);
+
+    // hook
+    const [isCamera, setIsCamera] = useState(false);
+    const [isAudio, setIsAudio] = useState(false);
+    const [isScreen, setIsScreen] = useState(false);
+    const [isHandsUp, setIsHandsUp] = useState(false);
+    const [screenShare, setScreenShare] = useState(null);
+    const [streaming, setStreaming] = useState();
+    const [audioStream, setAudioStream] = useState(null);
+    const [roomId, setRoomID] = useState('');
+    const [peerID, setPeerID] = useState(null);
+    const peerInstance = useRef(null);
+    const currentUserVideoRef = useRef(null);
+    const [userFrame, setUserFrame] = useState(null);
+    // redux
+    // const [users, setUsers] = useState([]);
+    const users = useSelector((state) => state.user.list);
+    const auth = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const ROOM_ID = window.location.href.split('/').reverse()[0];
@@ -41,17 +79,27 @@ function Meeting() {
                 setTimeout(() => {
                     setRoomMeet(res.data);
                 }, 1000);
-                console.log(res)
+                console.log(res);
             })
             .catch((err) => console.log(err));
 
         socket.current.on('other-user-join', (members) => {
             dispatch(addListUser(members));
+            audioJoinRef.current.play();
             socket.current.emit('list-user', members);
         });
 
         socket.current.on('list-user', (members) => {
             dispatch(addListUser(members));
+        });
+
+        socket.current.on('user-hands-up', (user) => {
+            audioHandRef.current.play();
+            setUserHandsUp(user);
+            setTimeout(() => {
+                setUserHandsUp(null);
+                setIsHandsUp(false);
+            }, 60000);
         });
 
         socket.current.on('other-user-disconnected', (socket_id) => {
@@ -67,18 +115,24 @@ function Meeting() {
         socket.current.on('new-survey', (data) => setSurvey(data));
         socket.current.on('new-vote', (data) => setSurvey(data));
         socket.current.on('new-question', (data) => {
-            setQuestion(data)
+            setQuestion(data);
         });
 
+        audioJoinRef.current.play();
 
         return () => {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             socket.current.disconnect();
             dispatch(removeChat());
             dispatch(removeList());
         };
-    }, []);
+    }, [dispatch]);
 
-    
+    useEffect(() => {
+        if (isHandsUp) {
+            socket.current.emit('hands-up', auth);
+        }
+    }, [auth, isHandsUp]);
 
     const handleCloseMeeting = () => {
         const ROOM_ID = window.location.href.split('/').reverse()[0];
@@ -89,24 +143,6 @@ function Meeting() {
             }
         });
     };
-
-    // hook
-    const [isCamera, setIsCamera] = useState(false);
-    const [isAudio, setIsAudio] = useState(false);
-    const [isScreen, setIsScreen] = useState(false);
-    const [screenShare, setScreenShare] = useState(null);
-    const [streaming, setStreaming] = useState();
-    const [audioStream, setAudioStream] = useState(null);
-    const [roomId, setRoomID] = useState('');
-    const [peerID, setPeerID] = useState(null);
-    const peerInstance = useRef(null);
-    const currentUserVideoRef = useRef(null);
-    const [userFrame, setUserFrame] = useState(null);
-    // redux
-    // const [users, setUsers] = useState([]);
-    const users = useSelector((state) => state.user.list);
-    const auth = useSelector((state) => state.auth);
-    const dispatch = useDispatch();
 
     const openStream = () => {
         const config = { audio: false, video: { width: 800, height: 450 } };
@@ -144,6 +180,7 @@ function Meeting() {
             track.stop();
         });
         currentUserVideoRef.current.srcObject = null;
+        socket.current.emit('user-stop-stream', peerID);
     }
 
     // stop only mic
@@ -154,6 +191,8 @@ function Meeting() {
             }
         });
     }
+
+    const [myStream, setMyStream] = useState(null);
 
     useEffect(() => {
         const peer = new Peer();
@@ -171,9 +210,9 @@ function Meeting() {
                     peerID: id,
                     stream: [],
                     audio: null,
+                    camera: null,
                 };
                 socket.current.emit('join_room', ROOM_ID, user, id);
-                console.log('join room');
                 dispatch(addUser(user));
             }
 
@@ -189,15 +228,7 @@ function Meeting() {
                         dispatch(setAudio(call.peer, reStream));
                     }
                     if (track.kind === 'video' && track) {
-                        const user = users.filter((user) => user.peerID === call.peer);
-                        console.log(users, call.peer);
-                        if (user.length) {
-                            // set stream camera redux
-                            dispatch(setStream(call.peer, reStream));
-                        } else {
-                            // set screen share redux
-                            dispatch(setStream(call.peer, reStream));
-                        }
+                        dispatch(setCamera(call.peer, reStream));
                     }
                 });
             });
@@ -226,11 +257,10 @@ function Meeting() {
     useEffect(() => {
         if (isCamera) {
             openStream().then((stream) => {
-                currentUserVideoRef.current.srcObject = stream;
-                currentUserVideoRef.current.play();
-
+                // currentUserVideoRef.current.srcObject = stream;
+                // currentUserVideoRef.current.play();
                 setStreaming(stream);
-
+                setMyStream(stream);
                 stream.type = 'camera';
                 users.forEach((user) => {
                     if (user.name !== auth.name) {
@@ -244,6 +274,7 @@ function Meeting() {
             if (streaming) {
                 stopVideoOnly(streaming);
                 setStreaming(null);
+                setMyStream(null);
                 dispatch(deleteStream(peerID));
             }
         }
@@ -263,20 +294,20 @@ function Meeting() {
     useEffect(() => {
         if (isScreen) {
             openScreenShare().then((stream) => {
-                currentUserVideoRef.current.srcObject = stream;
-                currentUserVideoRef.current.play();
-
                 users.forEach((user) => {
                     if (user.name !== auth.name) {
                         callScreen(user.peerID, stream);
                     }
                 });
+                setMyStream(stream);
+
                 setScreenShare(stream);
                 dispatch(setStream(peerID, stream));
             });
         } else {
             if (screenShare) {
                 stopVideoOnly(screenShare);
+                setMyStream(null);
 
                 dispatch(deleteStream(peerID));
             }
@@ -317,7 +348,6 @@ function Meeting() {
 
     const handleSelectUser = (user) => {
         setUserFrame(user);
-        console.log(user);
     };
 
     return (
@@ -370,7 +400,7 @@ function Meeting() {
                                 <FeatureBox survey={survey} question={question} socket={socket.current} />
                             </div>
                             <div className={cx('mid-content') + ' col-span-8'}>
-                                <VideoFrame videoTag={currentUserVideoRef} user={userFrame} />
+                                <VideoFrame videoTag={currentUserVideoRef} user={userFrame} currentStream={myStream} />
 
                                 <ToolBar
                                     camera={isCamera}
@@ -379,6 +409,8 @@ function Meeting() {
                                     onAudio={setIsAudio}
                                     screen={isScreen}
                                     onScreen={setIsScreen}
+                                    handsUp={isHandsUp}
+                                    onHandsUp={setIsHandsUp}
                                 />
                             </div>
                             <div className={cx('right-content') + ' col-span-2'}>
@@ -395,7 +427,12 @@ function Meeting() {
                                 ) : users.length < 4 ? (
                                     <div className="flex justify-evenly">
                                         {users.map((user, index) => (
-                                            <UserItem key={index} user={user} handleSelect={handleSelectUser} />
+                                            <UserItem
+                                                key={index}
+                                                user={user}
+                                                handleSelect={handleSelectUser}
+                                                socket={socket.current}
+                                            />
                                         ))}
                                     </div>
                                 ) : (
@@ -411,6 +448,18 @@ function Meeting() {
                     <CircularProgress />
                 </div>
             )}
+            {userHandsUp && (
+                <div className={cx('say-hi')}>
+                    <img src={handHello} alt="" width={40} />
+                    <h3>{userHandsUp.name}</h3>
+                </div>
+            )}
+            <audio ref={audioJoinRef} hidden>
+                <source src={audioJoin} />
+            </audio>
+            <audio ref={audioHandRef} hidden>
+                <source src={audiHandUp} />
+            </audio>
         </div>
     );
 }

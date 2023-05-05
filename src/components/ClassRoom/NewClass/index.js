@@ -1,32 +1,34 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Course from '../Course';
-const fetchDataCall = async () => {
-    const apiResult = await axios
-        .get(`http://localhost:3000/api/class`)
-        .then(async (res) => {
-            return res.data;
-        })
-        .catch((err) => console.error(err));
-    console.log('fetch data');
-    return apiResult;
-};
+import CircularProgress from '@mui/material/CircularProgress';
 
 function NewClass({ courses }) {
     const [listCourse, setListCourse] = useState([]);
+    const [isProgress, setIsProgress] = useState(false);
+    const listRef = useRef(null);
 
     useEffect(() => {
         if (!courses) {
-            const fetchData = async () => {
-                let data = await fetchDataCall();
-                setListCourse((prev) => [...prev, ...data]);
-            };
-            fetchData();
+            axios
+                .get(`http://localhost:3000/api/class`)
+                .then((res) => {
+                    setListCourse(res.data);
+                })
+                .catch((err) => console.error(err));
         } else {
             setListCourse(courses);
         }
-        console.log(courses);
     }, [courses]);
+
+    window.onscroll = (e) => {
+        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+            setIsProgress(true);
+            setTimeout(() => {
+                setIsProgress(false)
+            }, 500)
+        }
+    };
 
     return (
         <>
@@ -34,7 +36,7 @@ function NewClass({ courses }) {
                 <h1>Lớp học</h1>
             </div>
             <div>
-                <div className="grid grid-cols-3 gap-8">
+                <div className="grid grid-cols-3 gap-8" ref={listRef}>
                     {listCourse.length ? (
                         listCourse.map((course, index) => (
                             <div className="col-span-1" key={index}>
@@ -45,6 +47,11 @@ function NewClass({ courses }) {
                         <h2>Chưa có lớp học nào</h2>
                     )}
                 </div>
+            </div>
+            <div className='flex justify-center my-10'>
+                {
+                    isProgress && <CircularProgress />
+                }
             </div>
         </>
     );

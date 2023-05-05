@@ -3,7 +3,6 @@ import styles from './Class.module.scss';
 import icon from '~/assets/icon/learnmore.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faBell } from '@fortawesome/free-solid-svg-icons';
-import Course from '~/components/ClassRoom/Course';
 import { useRef, useState } from 'react';
 import NewClass from '~/components/ClassRoom/NewClass';
 import StudyClass from '~/components/ClassRoom/StudyClass';
@@ -13,6 +12,7 @@ import axios from 'axios';
 const cx = classNames.bind(styles);
 
 function Class() {
+    document.title = 'Lớp học';
     const inputSearchRef = useRef(null);
     const [inputSearch, setInputSearch] = useState('');
     const [active, setActive] = useState('newclass');

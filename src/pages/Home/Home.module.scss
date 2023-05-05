@@ -1,0 +1,52 @@
+.bg {
+    /* The image used */
+
+    /* Full height */
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.container {
+    position: fixed;
+    left: 150px;
+    top: calc(50% - 200px);
+    width: max-content;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+h2 {
+    font-size: 30px;
+    letter-spacing: 2px;
+    color: #fff;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.item {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+
+   h1 {
+    font-size: 24px;
+    color: #fff;
+   }
+
+   img {
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba($color: #fff, $alpha: .4);
+   }
+
+   &:hover {
+    cursor: pointer;
+   }
+}

@@ -7,11 +7,14 @@ import { faVideo } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { message } from 'antd';
 
 const cx = classNames.bind(styles);
 
 function Meet() {
+    document.title = 'Cuộc họp';
+    const [room, setRoom] = useState(null);
     const auth = useSelector((state) => state.auth);
     const [inputValue, setInputValue] = useState('');
     const navigate = useNavigate();
@@ -26,13 +29,26 @@ function Meet() {
             .post(`http://localhost:3000/meet`, {
                 author: auth,
                 id_room: null,
-                members: [
-                ],
+                members: [],
                 messages: [],
             })
             .then((res) => {
-                if(res.status === 200){
+                if (res.status === 200) {
                     navigate(`/meeting/${res.data.id_room}`);
+                }
+            })
+            .catch((err) => console.log(err));
+    };
+
+    const joinRoom = () => {
+        axios
+            .get(`http://localhost:3000/meet/room/${inputValue}`)
+            .then((res) => {
+                if (res.data) {
+                    setRoom(res.data);
+                    navigate(`/meeting/${res.data.id_room}`);
+                } else {
+                    message.error('ID phòng không hợp lệ!');
                 }
             })
             .catch((err) => console.log(err));
@@ -76,9 +92,9 @@ function Meet() {
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                             />
-                            <Link to={'/meeting/' + inputValue} relative="path" className={cx('btn')}>
-                                <button>Tham gia</button>
-                            </Link>
+                            <button className={cx('btn')} onClick={() => joinRoom()}>
+                                Tham gia
+                            </button>
                         </div>
                     </div>
                 </div>

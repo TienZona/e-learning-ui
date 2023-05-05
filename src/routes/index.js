@@ -12,15 +12,18 @@ import ClassRoom from '~/pages/ClassRoom';
 import Class from '~/pages/Class';
 import CreateClass from '~/components/ClassRoom/CreateClass';
 import EndMeeting from '~/pages/EndMeeting';
+import PageNotFound from '~/pages/NotFound';
 
 const publicRoutes = [
     {
         path: '/',
         component: Home,
+        layout: null,
     },
     {
         path: '/home',
         component: Home,
+        layout: null,
     },
     {
         path: '/meeting/:id',
@@ -36,11 +39,6 @@ const publicRoutes = [
         path: '/account',
         component: Auth,
         layout: AuthLayout,
-    },
-    {
-        path: '/meeting',
-        component: Test,
-        layout: MeetingLayout,
     },
     {
         path: '/classroom',
@@ -60,6 +58,10 @@ const publicRoutes = [
     {
         path: '/meeting/end',
         component: EndMeeting
+    },
+    {
+        path: '*',
+        component: PageNotFound,
     }
 ];
 

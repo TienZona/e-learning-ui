@@ -24,7 +24,7 @@ const userReducer = (state = initialState, action) => {
 
         case 'LIST_USER': {
             const newList = [...state.list];
-            console.log(action.payload)
+            console.log(action.payload);
 
             return {
                 ...state,
@@ -54,6 +54,33 @@ const userReducer = (state = initialState, action) => {
                 return item;
             });
 
+            return {
+                ...state,
+                list: newList,
+            };
+        }
+
+        case 'SET_CAMERA': {
+            const newList = state.list.map((item) => {
+                if (item.peerID === action.payload.userID) {
+                    item.camera = action.payload.stream;
+                }
+                return item;
+            });
+
+            return {
+                ...state,
+                list: newList,
+            };
+        }
+
+        case 'DELETE_CAMERA': {
+            const newList = state.list.map((item) => {
+                if (item.peerID === action.payload.userID) {
+                    item.camera = null;
+                }
+                return item;
+            });
             return {
                 ...state,
                 list: newList,

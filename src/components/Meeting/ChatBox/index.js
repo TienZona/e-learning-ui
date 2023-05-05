@@ -104,11 +104,7 @@ function ChatBox({ socket, username, room }) {
             )}
 
             <div className={cx('chat-footer')}>
-                <img
-                    className={cx('user-avatar')}
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDClP4ga9K8iOsHa5xVUcbwyrIqGOcaTxSXQ&usqp=CAU"
-                    alt=""
-                />
+                <img className={cx('user-avatar')} src={auth.avatar} alt="" />
                 <div className={cx('chat-input')}>
                     <input
                         value={currentMessage}

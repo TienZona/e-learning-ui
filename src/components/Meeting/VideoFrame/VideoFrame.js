@@ -28,33 +28,37 @@ const styleNormal = {
 };
 
 function VideoFrame(props) {
-    const [isPlayVideo, setPlayVideo] = useState(false);
+    const [isPlayVideo, setPlayVideo] = useState(true);
     const [iconFullScreen, setIconFullScreen] = useState(false);
-    const [iconFullScreenMedia, setIconFullScreenMedia] = useState(true);
 
     const handleFullScreenMedia = () => {
         props.videoTag.current.requestFullscreen();
     };
 
     const handleOpenStream = (stream) => {
-        props.videoTag.current.srcObject = stream;
-        props.videoTag.current.play();
+        if (stream) {
+            props.videoTag.current.srcObject = stream;
+            props.videoTag.current.play();
+            setPlayVideo(true);
+            console.log(isPlayVideo);
+        }
     };
 
     useEffect(() => {
-        if (props.videoTag.current.srcObject) {
+        if (props.user.camera) {
             setPlayVideo(true);
+            handleOpenStream(props.user.camera);
+        } else if (props.currentStream) {
+            handleOpenStream(props.currentStream);
         } else {
             setPlayVideo(false);
         }
-        if(props.user && props.user.stream.length){
-            props.videoTag.current.srcObject = props.user.stream[0];
-            props.videoTag.current.play();
-        }
-        
     }, [props]);
 
-    
+    useEffect(() => {
+        console.log(isPlayVideo);
+    }, [isPlayVideo]);
+
     return (
         <div className={cx('wrapper')} style={iconFullScreen ? styleFullScreen : styleNormal}>
             <div className={cx('wrap-box')}>
@@ -63,16 +67,16 @@ function VideoFrame(props) {
                         <>
                             {props.user && (
                                 <div style={{ width: '120px', display: 'flex', justifyContent: 'space-around' }}>
-                                    {props.user.stream.map((stream, index) => (
-                                        <Tooltip title="Play video" key={index}>
+                                    {props.user.camera && (
+                                        <Tooltip title="Play video">
                                             <div
-                                                className={cx('btn', true && 'active')}
-                                                onClick={() => handleOpenStream(stream)}
+                                                className={cx('btn', isPlayVideo && 'active')}
+                                                onClick={() => handleOpenStream(props.user.camera)}
                                             >
                                                 <FontAwesomeIcon icon={faCirclePlay} />
                                             </div>
                                         </Tooltip>
-                                    ))}
+                                    )}
                                 </div>
                             )}
                             <Tooltip title="Full Screen Website">
@@ -98,7 +102,7 @@ function VideoFrame(props) {
                     )}
                 </div>
             </div>
-            {props.user && (
+            {!isPlayVideo && (
                 <div className={cx('frame-image')} style={{ display: isPlayVideo && 'none' }}>
                     <div className={cx('frame-name')}>
                         <div className={cx('frame-avatar')}>

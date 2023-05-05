@@ -332,23 +332,6 @@ function ModalExercise({ setExercise }) {
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-span-1 mt-2 text-right">
-                                        <h2>Cho chỉnh sửa</h2>
-                                        <div className="mt-4 bs">
-                                            <Switch
-                                                style={{ margin: '4px 0 0 40px' }}
-                                                className="float-left"
-                                                size="small"
-                                                checked={isEdit}
-                                                onChange={onChangeEdit}
-                                            />
-                                            {isEdit ? (
-                                                <span className="underline">Có</span>
-                                            ) : (
-                                                <span className="underline">Không</span>
-                                            )}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -8,15 +8,11 @@ import {
     faHand,
     faDisplay,
 } from '@fortawesome/free-solid-svg-icons';
-import { useState, useEffect } from 'react';
-
 import styles from './ToolBar.module.scss';
 
 const cx = classNames.bind(styles);
 
 function ToolBar(props) {
-    const [hand, setHand] = useState(true);
-    const [screen, setScreen] = useState(true);
 
     return (
         <div className={cx('wrapper')}>
@@ -26,7 +22,7 @@ function ToolBar(props) {
             <div className={cx('item', props.camera && 'checked')} onClick={() => props.onCamera(!props.camera)}>
                 <FontAwesomeIcon className={cx('icon-mic')} icon={props.camera ? faVideo : faVideoSlash} />
             </div>
-            <div className={cx('item', hand || 'checked')} onClick={() => setHand(!hand)}>
+            <div className={cx('item', props.handsUp && 'checked')} onClick={() => props.onHandsUp(!props.handsUp)}>
                 <FontAwesomeIcon className={cx('icon-mic')} icon={faHand} />
             </div>
             <div className={cx('item', props.screen && 'checked')} onClick={() => props.onScreen(!props.screen)}>

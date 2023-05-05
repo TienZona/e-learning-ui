@@ -131,7 +131,6 @@ function ClassRoom() {
     };
 
     const onSubmitCreateCalender = () => {
-        console.log(calender);
         axios
             .post(`http://localhost:3000/api/classroom/calender/${ID_CLASS}`, calender)
             .then((res) => {

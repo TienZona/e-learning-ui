@@ -14,7 +14,6 @@ import {
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import { DateNavigator } from '@devexpress/dx-react-scheduler-material-ui';
-import { Button } from 'antd';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -43,7 +42,7 @@ function Calendar() {
         <div className={cx('wrap')}>
             <Paper>
                 <Scheduler data={schedulerData} height={660}>
-                    <ViewState defaultCurrentDate={Date.now()} defaultCurrentViewName="Month" />
+                    <ViewState defaultCurrentDate={Date.now()} defaultCurrentViewName="Day" />
 
                     <DayView startDayHour={1} endDayHour={24} cellDuration={60} />
                     <WeekView startDayHour={1} endDayHour={24} cellDuration={60} />
